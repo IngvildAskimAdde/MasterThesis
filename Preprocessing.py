@@ -18,6 +18,8 @@ def dimensions(path_main_folder):
         df1 = pd.DataFrame({'File': files, 'Path': paths})
         df = df.append(df1)
 
+        #TODO: Group File column in dataframe
+
     return df
 
 
