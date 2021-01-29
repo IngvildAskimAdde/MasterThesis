@@ -29,34 +29,54 @@ def dataset_dataframe(path_main_folder):
     return df
 
 
-
-df = dataset_dataframe('/Volumes/Untitled 1/LARC_T2_cleaned_nii')
-#df = dimensions('/Volumes/Untitled 1/Ingvild_Oxytarget')
-
 def dimensions(dataset_dataframe):
+
     dataset_dataframe['xDimension'] = ''
     dataset_dataframe['yDimension'] = ''
     dataset_dataframe['zDimension'] = ''
+
+    dataset_dataframe['xVoxelDimension'] = ''
+    dataset_dataframe['yVoxelDimension'] = ''
+    dataset_dataframe['zVoxelDimension'] = ''
+
     for i, row in dataset_dataframe.iterrows():
         image = sitk.ReadImage(row[1])
         array = sitk.GetArrayFromImage(image)
         dim = np.shape(array)
-        print(dim[1], dim[2], dim[0])
+        print(image.GetSpacing()[0])
+
         dataset_dataframe['xDimension'][i] = dim[1]
         dataset_dataframe['yDimension'][i] = dim[2]
         dataset_dataframe['zDimension'][i] = dim[0]
+
+        dataset_dataframe['xVoxelDimension'][i] = image.GetSpacing()[0]
+        dataset_dataframe['yVoxelDimension'][i] = image.GetSpacing()[1]
+        dataset_dataframe['zVoxelDimension'][i] = image.GetSpacing()[2]
+
     return dataset_dataframe
 
+#df = dataset_dataframe('/Volumes/Untitled/LARC_T2_preprocessed')
+df = dataset_dataframe('/Volumes/Untitled 1/Oxytarget_preprocessed')
+
 df = dimensions(df)
-df_imgFile = df.iloc[:int(df.shape[0]/3)]
-df_maskFile = df.iloc[2*int(df.shape[0]/3):]
+df_imgFile = df.iloc[:int(df.shape[0]/2)]
+#df_maskFile = df.iloc[2*int(df.shape[0]/3):]
 
-print('Image files: ', df_imgFile['xDimension'].value_counts())
-print('Mask files: ', df_maskFile['xDimension'].value_counts())
+#print('Image files: ', df_imgFile['xDimension'].value_counts())
+#print('Mask files: ', df_maskFile['xDimension'].value_counts())
+#print('Image files (voxelsize): ', df_imgFile['xVoxelDimension'].value_counts())
 
+print('Max x-dimension:', df['xDimension'].max())
+print('Max y-dimension:', df['yDimension'].max())
+print('Max z-dimension:', df['zDimension'].max())
+
+"""
 plt.figure()
 sns.histplot(df_imgFile, x='xDimension')
-plt.title('(256,256)=6, (384,384)=1, (512,512)=49, (640,640)=33')
+plt.title('OxyTarget image dimensions \n (512,512)=107, (528,528)=2, (560,560)=1')
 
 plt.figure()
-sns.histplot(df_maskFile, x='xDimension')
+sns.histplot(df_imgFile, x='xVoxelDimension')
+plt.title('OxyTarget voxelsizes')
+          #'\n (0.323,0.323)=1, (0.340,0.340)=1, (0.342,0.342)=1, (0.344, 0.344)=1 \n (0.3467,0.3467)=1, (0.3477,0.3477)=1, (0.3478,0.3478)=1, (0.351,0.351)=1 \n (0.352,0.352)=65 ')
+"""
