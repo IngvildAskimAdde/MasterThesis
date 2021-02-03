@@ -67,6 +67,12 @@ def get_paths(main_folder, image_prefix, mask_suffix):
         patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1].replace('._1', '1')
         patientsPaths_groundTruth.remove(patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1])
 
+    #remove copied files from mask paths
+    count = 0
+    while count < len(patientsPaths_groundTruth):
+        if '._' in patientsPaths_groundTruth[count]:
+            patientsPaths_groundTruth.remove(patientsPaths_groundTruth[count])
+        count += 1
 
     return patientsPaths, patientsNames, patientsPaths_image, patientsPaths_groundTruth
 
