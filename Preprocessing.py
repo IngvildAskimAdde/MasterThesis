@@ -6,6 +6,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import ImageViewer as iv
+import get_data as gd
+
 
 def dataset_dataframe(path_main_folder):
 
@@ -30,6 +32,12 @@ def dataset_dataframe(path_main_folder):
 
     return df
 
+def dataframe(patientPaths, patientNames, imagePaths, maskPaths):
+
+    df = pd.DataFrame(list(zip(patientPaths, patientNames, imagePaths, maskPaths)),columns=['patientPaths', 'ID', 'imagePaths', 'maskPaths'])
+    return df
+
+
 
 def dimensions(dataset_dataframe):
 
@@ -41,11 +49,10 @@ def dimensions(dataset_dataframe):
     dataset_dataframe['yVoxelDimension'] = ''
     dataset_dataframe['zVoxelDimension'] = ''
 
-    for i, row in dataset_dataframe.iterrows():
-        image = sitk.ReadImage(row[1])
+    for i in range(len(dataset_dataframe['imagePaths'])):
+        image = sitk.ReadImage(dataset_dataframe['imagePaths'][i])
         array = sitk.GetArrayFromImage(image)
         dim = np.shape(array)
-        print(image.GetSpacing()[0])
 
         dataset_dataframe['xDimension'][i] = dim[1]
         dataset_dataframe['yDimension'][i] = dim[2]
@@ -84,26 +91,19 @@ def create_image_from_array(array, imsize):
 
 
 
-def crop_images(dataframe, number_of_files, original_dimension, new_dimension):
+def crop_images(dataframe, original_dimension, new_dimension):
+    """
+    for i in range(len(dataframe['imagePaths'])):
+        image_array_original, image_imsize_original = get_array(dataframe['imagePaths'][i])
+        mask_array_original, mask_imsize_original = get_array(dataframe['maskPaths'][i])
+        print('Original imagesize:', dataframe['imagePaths'][i], image_imsize_original)
+        print('Original masksize:', dataframe['maskPaths'][i], mask_imsize_original)
 
-    df_imgFile = dataframe.iloc[:int(dataframe.shape[0]/number_of_files)]
-    df_maskFile = dataframe.iloc[2*int(dataframe.shape[0]/number_of_files):]
-
-    image_paths = np.array(df_imgFile['Path'])
-
-
-    for i in range(len(image_paths)):
-        image_array_original, image_imsize_original = get_array(i)
-        mask_array_original, mask_imsize_original = get_array(i)
-        print('Original imagesize:', image_imsize_original)
-        print('Original masksize:', mask_imsize_original)
-
-
-        pixels_to_crop = original_dimension-new_dimension
-        crop_start = int(pixels_to_crop/2)
-        print(crop_start)
-        crop_stop = int(original_dimension-crop_start)
-        print(crop_stop)
+        if image_imsize_original != 256:
+            crop_start = int((original_dimension-new_dimension)/2)
+            print(crop_start)
+            crop_stop = int(original_dimension-crop_start)
+            print(crop_stop)
 
         #image_original = sitk.ReadImage(image_paths)
         #mask_original = sitk.ReadImage(mask_paths)
@@ -127,25 +127,40 @@ def crop_images(dataframe, number_of_files, original_dimension, new_dimension):
         if tumor_originally != tumor_cropped:
             print('THE AMOUNT OF TUMOR IS REDUCED AFTER CROPPING! PATH:', image_paths)
 
+    """
 
     #return image_original, mask_original, image_cropped, mask_cropped
+
+#LARC_patientPaths, LARC_PatientNames, LARC_imagePaths, LARC_maskPaths = gd.get_paths('/Volumes/Untitled 1/LARC_T2_cleaned_nii', 'image', 'label.nii')
+#Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/Untitled/Ingvild_Oxytarget', 'T2', 'an.nii')
+
+#LARC_df = dataframe(LARC_patientPaths, LARC_PatientNames, LARC_imagePaths, LARC_maskPaths)
+#LARC_df = dimensions(LARC_df)
+#crop_images(LARC_df, 512, 352)
+
 
 """
 #image_original, mask_original, image_cropped, mask_cropped =
 #crop_images('/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-005/MRS1/image.nii',
                                                                          '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-005/MRS1/1 RTSTRUCT LARC_MRS1-label.nii',
                                                                          512,
-                                                                         352)
+                                                                     352)
+"""
+
+image_original = sitk.ReadImage('/Volumes/HARDDISK/MasterThesis/LARC_cropped/LARC-RRP-087/image.nii')
+mask_original = sitk.ReadImage('/Volumes/HARDDISK/MasterThesis/LARC_cropped/LARC-RRP-087/1 RTSTRUCT LARC_MRS1-label.nii')
+
+print(image_original.GetSize())
 
 v = iv.Viewer()
 v.set_image(image_original, label='original image')
 v.set_mask(mask_original, label='original mask', color_name='green')
-v.set_image(image_cropped, label='cropped image')
-v.set_mask(mask_cropped, label='cropped mask',color_name='red')
+#v.set_image(image_cropped, label='cropped image')
+#v.set_mask(mask_cropped, label='cropped mask',color_name='red')
 v.show()
-"""
 
-df = dataset_dataframe('/Volumes/Untitled/LARC_T2_cleaned_nii')
+
+#df = dataset_dataframe('/Volumes/Untitled/LARC_T2_cleaned_nii')
 #df = dataset_dataframe('/Volumes/Untitled 1/Oxytarget_preprocessed')
 
 #df = dimensions(df)
@@ -155,7 +170,6 @@ df = dataset_dataframe('/Volumes/Untitled/LARC_T2_cleaned_nii')
 #print('Image files: ', df_imgFile['xDimension'].value_counts())
 #print('Mask files: ', df_maskFile['xDimension'].value_counts())
 #print('Image files (voxelsize): ', df_imgFile['xVoxelDimension'].value_counts())
-
 """
 print('Max x-dimension:', df['xDimension'].max())
 print('Max y-dimension:', df['yDimension'].max())
