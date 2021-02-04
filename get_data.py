@@ -46,21 +46,20 @@ def get_paths(main_folder, image_prefix, mask_suffix):
             patientsPaths.append(patientsPath)
             patientsNames.append(entry)
 
-        if main_folder.endswith('preprocessed') or main_folder.endswith('corrected') or main_folder.endswith('target'):
-
-            for i in os.listdir(patientsPath):
-                if i.startswith(image_prefix):
-                    patientsPaths_image.append(os.path.join(patientsPath,i))
-                else:
-                    patientsPaths_groundTruth.append(os.path.join(patientsPath,i))
-
-        else:
+        if 'cleaned' in main_folder:
             patientsPath = patientsPath + '/MRS1'
             for i in os.listdir(patientsPath):
                 if i.startswith(image_prefix):
-                    patientsPaths_image.append(os.path.join(patientsPath,i))
+                    patientsPaths_image.append(os.path.join(patientsPath, i))
                 elif i.endswith(mask_suffix):
-                    patientsPaths_groundTruth.append(os.path.join(patientsPath,i))
+                    patientsPaths_groundTruth.append(os.path.join(patientsPath, i))
+
+        else:
+            for i in os.listdir(patientsPath):
+                if i.startswith(image_prefix):
+                    patientsPaths_image.append(os.path.join(patientsPath, i))
+                else:
+                    patientsPaths_groundTruth.append(os.path.join(patientsPath, i))
 
     if main_folder.endswith('LARC_T2_preprocessed'):
         # Fixing bug in the label string of patient 001
