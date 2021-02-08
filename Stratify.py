@@ -8,19 +8,6 @@ from sklearn.model_selection import StratifiedShuffleSplit
 data_Oxy = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MaterThesis/200618_Inklusjonsdata_COPY.xlsx", index_col=0)
 data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MaterThesis/150701 Kliniske data endelig versjon.xlsx", index_col=0)
 
-data_1 = pd.DataFrame()
-data_1['ID'] = data_Oxy['ID']
-data_1['Kjønn'] = data_Oxy['Kjønn']
-data_1['Stage'] = data_Oxy['Stage']
-
-data_2 = pd.DataFrame()
-data_2['ID'] = data_LARC['Database No.']
-data_2['Kjønn'] = data_LARC['Kjønn']
-data_2['Stage'] = data_LARC['Stage']
-
-data = data_1.append(data_2, ignore_index=True)
-
-
 def categorize(data):
 
     category = np.zeros(len(data))
@@ -85,7 +72,7 @@ def plot_distribution(category, title):
                     ha='center', va='bottom')
 
     bottom, top = ax.get_ylim()
-    ax.set_ylim(bottom, top+2)
+    ax.set_ylim(bottom, top+3)
     ax.legend()
     fig.tight_layout()
     plt.show()
@@ -94,42 +81,63 @@ def plot_distribution(category, title):
 #E.g. in the LARC-RRP dataset the patient LARC-RRP-045 is the only one belonging to category 4
 
 ###################################################
-#data = data.drop(41)
-#data['index'] = range(0,88)
-#data = data.set_index('index')
+data_LARC = data_LARC.drop(41)
+data_LARC['index'] = range(0,88)
+data_LARC = data_LARC.set_index('index')
 
 ##################################################
 
-patients = pd.DataFrame(data).to_numpy()[:,0]
-category = categorize(data)
+patientsOxy = pd.DataFrame(data_Oxy).to_numpy()[:,0]
+categoryOxy = categorize(data_Oxy)
 
-sss_test = StratifiedShuffleSplit(n_splits=1, test_size=30, random_state=0)
-for trainVal_index, test_index in sss_test.split(patients, category):
-    trainVal = patients[trainVal_index]
-    trainVal_cat = category[trainVal_index]
-    test = patients[test_index]
-    test_cat = category[test_index]
+patientsLARC = pd.DataFrame(data_LARC).to_numpy()[:,0]
+categoryLARC = categorize(data_LARC)
 
-sss_val = StratifiedShuffleSplit(n_splits=1, test_size=30, random_state=0)
-for train_index, val_index in sss_val.split(trainVal, trainVal_cat):
-    train = trainVal[train_index]
-    train_cat = trainVal_cat[train_index]
-    val = trainVal[val_index]
-    val_cat = trainVal_cat[val_index]
+def split(patients, category, test_size, val_size):
+    sss_test = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=0)
+    for trainVal_index, test_index in sss_test.split(patients, category):
+        trainVal = patients[trainVal_index]
+        trainVal_cat = category[trainVal_index]
+        test = patients[test_index]
+        test_cat = category[test_index]
+
+    sss_val = StratifiedShuffleSplit(n_splits=1, test_size=val_size, random_state=0)
+    for train_index, val_index in sss_val.split(trainVal, trainVal_cat):
+        train = trainVal[train_index]
+        train_cat = trainVal_cat[train_index]
+        val = trainVal[val_index]
+        val_cat = trainVal_cat[val_index]
+
+    return train, train_cat, train_index, val, val_cat, val_index, test, test_cat, test_index
+
+trainOxy, train_catOxy, train_indexOxy, valOxy, val_catOxy, val_indexOxy, testOxy, test_catOxy, test_indexOxy = split(patientsOxy, categoryOxy, 17, 16)
+trainLARC, train_catLARC, train_indexLARC, valLARC, val_catLARC, val_indexLARC, testLARC, test_catLARC, test_indexLARC = split(patientsLARC, categoryLARC, 13, 13)
 
 #This section is needed when there is only one patient with a certain class
 
 ####################################################
-#train_cat = np.insert(train_cat,0,4)
-#train_index = np.insert(train_index,0,42)
-#train = np.insert(train, 0, 'LARC-RRP-045')
-#category = np.insert(category, 0, 4)
+train_catLARC = np.insert(train_catLARC,0,4)
+train_indexLARC = np.insert(train_indexLARC,0,42)
+trainLARC = np.insert(trainLARC, 0, 'LARC-RRP-045')
+categoryLARC = np.insert(categoryLARC, 0, 4)
 ###################################################
 
+category = np.append(categoryOxy, categoryLARC)
+
+train = np.append(trainOxy, trainLARC)
+train_cat = np.append(train_catOxy, train_catLARC)
+
+val = np.append(valOxy, valLARC)
+val_cat = np.append(val_catOxy, val_catLARC)
+
+test = np.append(testOxy, testLARC)
+test_cat = np.append(test_catOxy, test_catLARC)
+
+
 plot_distribution(category, r'Total dataset')
-#plot_distribution(train_cat, r'Training set')
-#plot_distribution(val_cat, r'Validation set')
-#plot_distribution(test_cat, r'Test set')
+plot_distribution(train_cat, r'Training set')
+plot_distribution(val_cat, r'Validation set')
+plot_distribution(test_cat, r'Test set')
 
 print(np.sort(train))
 print(np.sort(val))
