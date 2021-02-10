@@ -150,6 +150,7 @@ def get_patient_id(patient: Path)-> int:
     """
     Return the patient ID from the path of this patient's data folder.
     """
+    #TODO: HOW TO FIX THIS SPLIT ERROR? 'PosixPath' object has no attribute 'split'
     return int(str(patient.split("_")[1]))
 
 def generate_fold_group(
