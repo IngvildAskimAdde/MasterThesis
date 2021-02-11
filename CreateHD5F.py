@@ -10,8 +10,6 @@ from pathlib import Path
 import nibabel as nib
 from typing import (Callable, DefaultDict, Dict, Generator, Iterable, List, Set, Tuple, Union)
 
-#First gather you data as np.array
-#patientsPathsOxy, patientsNamesOxy, patientsPaths_imageOxy, patientsPaths_groundTruthOxy = gd.get_paths('/Volumes/HARDDISK/MasterThesis/Oxy_cropped', 'T2', 'an.nii')
 trainPatientsOxy = ['Oxytarget_24', 'Oxytarget_27', 'Oxytarget_31', 'Oxytarget_32',
  'Oxytarget_40', 'Oxytarget_44', 'Oxytarget_45', 'Oxytarget_46',
  'Oxytarget_47', 'Oxytarget_48', 'Oxytarget_50', 'Oxytarget_51',
@@ -42,32 +40,78 @@ testPatientsOxy = ['OxyTarget_029', 'OxyTarget_041', 'OxyTarget_049', 'OxyTarget
  'OxyTarget_131', 'OxyTarget_145', 'OxyTarget_146', 'OxyTarget_157',
  'OxyTarget_176']
 
-def create_splits(trainingPatients, validationPatients, testPatients):
+trainPatientsLARC = ['LARC-RRP-001', 'LARC-RRP-003', 'LARC-RRP-006', 'LARC-RRP-007',
+ 'LARC-RRP-010', 'LARC-RRP-015', 'LARC-RRP-016', 'LARC-RRP-017',
+ 'LARC-RRP-018', 'LARC-RRP-019', 'LARC-RRP-024', 'LARC-RRP-026',
+ 'LARC-RRP-027', 'LARC-RRP-029', 'LARC-RRP-030', 'LARC-RRP-031',
+ 'LARC-RRP-033', 'LARC-RRP-035', 'LARC-RRP-036', 'LARC-RRP-037',
+ 'LARC-RRP-038', 'LARC-RRP-039', 'LARC-RRP-040', 'LARC-RRP-041',
+ 'LARC-RRP-042', 'LARC-RRP-043', 'LARC-RRP-045', 'LARC-RRP-047',
+ 'LARC-RRP-048', 'LARC-RRP-049', 'LARC-RRP-050', 'LARC-RRP-051',
+ 'LARC-RRP-052', 'LARC-RRP-053', 'LARC-RRP-055', 'LARC-RRP-058',
+ 'LARC-RRP-059', 'LARC-RRP-060', 'LARC-RRP-062', 'LARC-RRP-064',
+ 'LARC-RRP-065', 'LARC-RRP-067', 'LARC-RRP-069', 'LARC-RRP-070',
+ 'LARC-RRP-071', 'LARC-RRP-073', 'LARC-RRP-074', 'LARC-RRP-075',
+ 'LARC-RRP-076', 'LARC-RRP-077', 'LARC-RRP-078', 'LARC-RRP-079',
+ 'LARC-RRP-080', 'LARC-RRP-081', 'LARC-RRP-083', 'LARC-RRP-086',
+ 'LARC-RRP-087', 'LARC-RRP-089', 'LARC-RRP-091', 'LARC-RRP-092',
+ 'LARC-RRP-093', 'LARC-RRP-094', 'LARC-RRP-095']
+valPatientsLARC = ['LARC-RRP-009', 'LARC-RRP-011', 'LARC-RRP-013', 'LARC-RRP-028',
+ 'LARC-RRP-044', 'LARC-RRP-054', 'LARC-RRP-057', 'LARC-RRP-068',
+ 'LARC-RRP-072', 'LARC-RRP-084', 'LARC-RRP-085', 'LARC-RRP-088',
+ 'LARC-RRP-090']
+testPatientsLARC = ['LARC-RRP-004', 'LARC-RRP-005', 'LARC-RRP-008', 'LARC-RRP-014',
+ 'LARC-RRP-020', 'LARC-RRP-021', 'LARC-RRP-022', 'LARC-RRP-023',
+ 'LARC-RRP-032', 'LARC-RRP-034', 'LARC-RRP-066', 'LARC-RRP-096',
+ 'LARC-RRP-099']
+
+
+def create_TrainValTest_sets(trainingPatients, validationPatients, testPatients):
     """
     Returns a dictionary with training, validation and test patient ids.
     """
     dict = {}
-    training_ids = []
-    val_ids = []
-    test_ids = []
+    training_ids = set()
+    val_ids = set()
+    test_ids = set()
+
 
     for patient in trainingPatients:
-        patient_id = get_patient_id(patient)
-        training_ids.append(patient_id)
+        if patient.startswith('Oxy'):
+            patient_id = int(patient.split('_')[1])
+            training_ids.add(patient_id)
+        elif patient.startswith('LARC'):
+            patient_id = int(patient.split('-')[2])
+            training_ids.add(patient_id)
+        else:
+            print('Patient not recognized')
 
     for patient in validationPatients:
-        patient_id = get_patient_id(patient)
-        val_ids.append(patient_id)
+        if patient.startswith('Oxy'):
+            patient_id = int(patient.split('_')[1])
+            val_ids.add(patient_id)
+        elif patient.startswith('LARC'):
+            patient_id = int(patient.split('-')[2])
+            val_ids.add(patient_id)
+        else:
+            print('Patient not recognized')
 
     for patient in testPatients:
-        patient_id = get_patient_id(patient)
-        test_ids.append(patient_id)
+        if patient.startswith('Oxy'):
+            patient_id = int(patient.split('_')[1])
+            test_ids.add(patient_id)
+        elif patient.startswith('LARC'):
+            patient_id = int(patient.split('-')[2])
+            test_ids.add(patient_id)
+        else:
+            print('Patient not recognized')
 
-    dict['train'] = training_ids
-    dict['val'] = val_ids
-    dict['test'] = test_ids
+    dict['train'] = [training_ids]
+    dict['val'] = [val_ids]
+    dict['test'] = [test_ids]
 
     return dict
+
 
 def get_split_paths(patient, image_paths, mask_paths, list_of_patient_names):
     """
@@ -76,34 +120,41 @@ def get_split_paths(patient, image_paths, mask_paths, list_of_patient_names):
     image_path = None
     mask_path = None
 
-    #for i in range(len(training_patients)):
     for j in range(len(list_of_patient_names)):
         if patient in list_of_patient_names[j]:
-            #print(patient, list_of_patient_names[j], image_paths[j])
             image_path = (image_paths[j])
             mask_path = (mask_paths[j])
 
     return image_path, mask_path
-
-
-#def load_nii(file_path):
-    """
-    Return the contents of a nii file as a NumPy array.
-    """
-    #return sitk.GetArrayFromImage(sitk.ReadImage(file_path))
 
 def load_nii(nii_file: Union[Path, str]) -> np.array:
     """Return the contents of a nii file as a NumPy array.
     """
     return np.array(nib.load(nii_file).get_fdata())
 
-def load_t2w(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray]:
+def load_t2w_Oxy(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray]:
     """
     Load the images and mask for a T2W scan folder.
     """
 
     image_names = ["T2.nii"]
     mask_names = ["Manual_an.nii"]
+
+    images = np.stack([load_nii(subject / image_name).T[:,::downsample, ::downsample]
+                       for image_name in image_names], axis=-1)
+
+    masks = np.stack([load_nii(subject / mask_name).T[:,::downsample, ::downsample]
+                       for mask_name in mask_names], axis=-1)
+
+    return images, masks
+
+def load_t2w_LARC(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Load the images and mask for a T2W scan folder.
+    """
+
+    image_names = ["image.nii"]
+    mask_names = ["1 RTSTRUCT LARC_MRS1-label.nii"]
 
     images = np.stack([load_nii(subject / image_name).T[:,::downsample, ::downsample]
                        for image_name in image_names], axis=-1)
@@ -146,14 +197,19 @@ def extend_dataset(dataset:h5py.Dataset, data:np.ndarray) -> h5py.Dataset:
     return dataset
 
 
-def get_patient_id(patient: Path)-> int:
+def get_patient_id_Oxy(patient: Path)-> int:
     """
     Return the patient ID from the path of this patient's data folder.
     """
-    #TODO: HOW TO FIX THIS SPLIT ERROR? 'PosixPath' object has no attribute 'split'
-    return int(str(patient.split("_")[1]))
+    return int(patient.name.split('_')[1])
 
-def generate_fold_group(
+def get_patient_id_LARC(patient: Path)-> int:
+    """
+    Return the patient ID from the path of this patient's data folder.
+    """
+    return int(patient.name.split('-')[2])
+
+def generate_fold_group_Oxy(
         group:h5py.Group, patient_folders:Iterable[Path])->None:
     """
     Generate dataset for a single fold.
@@ -163,14 +219,12 @@ def generate_fold_group(
     patient_ids = None
     for patient in tqdm(patient_folders):
         print(patient)
-        #image_path, mask_path = get_split_paths(patient, image_paths, mask_paths, list_of_patient_names)
-        #images, masks = create_array_of_images(image_path, mask_path)
-        images, masks = load_t2w(patient)
-        patient_id = get_patient_id(patient)
+        images, masks = load_t2w_Oxy(patient)
+        patient_id = get_patient_id_Oxy(patient)
         patient_id = np.ones(images.shape[0])*patient_id
 
         if input_dataset is None:
-            input_dataset = populate_initial_dataset((images, group,"input"))
+            input_dataset = populate_initial_dataset(images, group,"input")
             mask_dataset = populate_initial_dataset(masks, group, "target_an")
             patient_ids = populate_initial_dataset(patient_id, group, "patient_ids")
         else:
@@ -178,13 +232,52 @@ def generate_fold_group(
             mask_dataset = extend_dataset(mask_dataset, masks)
             patient_ids = extend_dataset(patient_ids, patient_id)
 
-def patient_iter(data_folder:str, id_list:List[int])->Generator[Path,None,None]:
+def generate_fold_group_LARC(
+        group:h5py.Group, patient_folders:Iterable[Path])->None:
+    """
+    Generate dataset for a single fold.
+    """
+    input_dataset = None
+    mask_dataset = None
+    patient_ids = None
+    for patient in tqdm(patient_folders):
+        print(patient)
+        images, masks = load_t2w_LARC(patient)
+        patient_id = get_patient_id_LARC(patient)
+        patient_id = np.ones(images.shape[0])*patient_id
+
+        if input_dataset is None:
+            input_dataset = populate_initial_dataset(images, group,"input")
+            mask_dataset = populate_initial_dataset(masks, group, "target_an")
+            patient_ids = populate_initial_dataset(patient_id, group, "patient_ids")
+        else:
+            input_dataset = extend_dataset(input_dataset, images)
+            mask_dataset = extend_dataset(mask_dataset, masks)
+            patient_ids = extend_dataset(patient_ids, patient_id)
+
+def patient_iter_Oxy(data_folder:str, id_list:List[int])->Generator[Path,None,None]:
     """
     Iterate over the patient folders corresponding to the input id list.
     """
     data_folder = Path(data_folder)
     for id_ in id_list:
         yield data_folder / f"Oxytarget_{id_}_PRE"
+
+def patient_iter_LARC(data_folder:str, id_list:List[int])->Generator[Path,None,None]:
+    """
+    Iterate over the patient folders corresponding to the input id list.
+    """
+    data_folder = Path(data_folder)
+    for id_ in id_list:
+
+        if len(str(id_)) == 1:
+            yield data_folder / f"LARC-RRP-00{id_}"
+
+        elif len(str(id_)) == 2:
+            yield  data_folder / f"LARC-RRP-0{id_}"
+
+        else:
+            yield data_folder / f"LARC-RRP-{id_}"
 
 def random_split(ids:Iterable[int], n_folds:int) -> List[Set[int]]:
     """
@@ -218,7 +311,7 @@ def generate_folds(splits:Dict[str,Set[int]], num_per_fold:int) -> Dict[str, Lis
 
     return folds
 
-def generate_hdf5_file(folds:Dict[str, List[Set[int]]], out_name:str, data_path:Path, overwrite=False)->DefaultDict[str,List[str]]:
+def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], out_name:str, data_path:Path, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
     """
     Generate a HDF5 file based on dataset splits.
 
@@ -231,34 +324,105 @@ def generate_hdf5_file(folds:Dict[str, List[Set[int]]], out_name:str, data_path:
     if not overwrite and out_file.is_file():
         raise RuntimeError("File exists")
 
-    fold_num = 0
-    with h5py.File(out_file, "w") as h5:
-        for split in folds: #split is usually train, test or val
-            print(split)
+    if not k_fold:
+        print('Running train, val and test mode')
 
-            for fold in folds[split]:
-                foldname = f"fold_{fold_num}"
-                print(foldname)
-                fold_num += 1
+        with h5py.File(out_file, "w") as h5:
+            for split in folds:  # split is usually train, test or val
+                print(split)
 
-                #Update h5py
-                group = h5.create_group(foldname)
-                fold_names[split].append(foldname)
-                fold = sorted(patient_iter(data_path, fold))
-                generate_fold_group(group, fold)
+                for fold in folds[split]:
+                    foldname = split
+                    print(foldname)
+
+                    # Update h5py
+                    group = h5.create_group(foldname)
+                    fold_names[split].append(foldname)
+                    fold = sorted(patient_iter_Oxy(data_path, fold))
+                    generate_fold_group_Oxy(group, fold)
+
+    else:
+        print('Running k-fold mode')
+        fold_num = 0
+        with h5py.File(out_file, "w") as h5:
+            for split in folds: #split is usually train, test or val
+                print(split)
+
+                for fold in folds[split]:
+                    foldname = f"fold_{fold_num}"
+                    print(foldname)
+                    fold_num += 1
+
+                    #Update h5py
+                    group = h5.create_group(foldname)
+                    fold_names[split].append(foldname)
+                    fold = sorted(patient_iter_Oxy(data_path, fold))
+                    generate_fold_group_Oxy(group, fold)
+
+    return fold_names
+
+def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_path:Path, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
+    """
+    Generate a HDF5 file based on dataset splits.
+
+    fold_names is a dictionary that maps the split names to a list of folds names in each split.
+    """
+
+    fold_names = defaultdict(list)
+
+    out_file = data_path / out_name
+    if not overwrite and out_file.is_file():
+        raise RuntimeError("File exists")
+
+    if not k_fold:
+        print('Running train, val and test mode')
+
+        with h5py.File(out_file, "w") as h5:
+            for split in folds:  # split is usually train, test or val
+                print(split)
+
+                for fold in folds[split]:
+                    foldname = split
+                    print(foldname)
+
+                    # Update h5py
+                    group = h5.create_group(foldname)
+                    fold_names[split].append(foldname)
+                    fold = sorted(patient_iter_LARC(data_path, fold))
+                    generate_fold_group_LARC(group, fold)
+
+    else:
+        print('Running k-fold mode')
+        fold_num = 0
+        with h5py.File(out_file, "w") as h5:
+            for split in folds: #split is usually train, test or val
+                print(split)
+
+                for fold in folds[split]:
+                    foldname = f"fold_{fold_num}"
+                    print(foldname)
+                    fold_num += 1
+
+                    #Update h5py
+                    group = h5.create_group(foldname)
+                    fold_names[split].append(foldname)
+                    fold = sorted(patient_iter_LARC(data_path, fold))
+                    generate_fold_group_LARC(group, fold)
 
     return fold_names
 
 
 
-splits = create_splits(trainPatientsOxy, valPatientsOxy, testPatientsOxy)
-#splits = {"train": {24, 27, 31, 32, 40, 44, 45, 46, 47, 48, 50, 51, 52, 55, 56, 57, 58, 59, 64, 65, 67, 68, 72, 75, 77, 78, 79, 80, 85, 90, 91, 95, 96, 103, 106, 108, 110, 113, 116, 118, 120, 123, 125, 126, 127, 130, 134, 143, 144, 148, 149, 150, 153, 154, 155, 156, 160, 165, 166, 169, 170, 171, 172, 173, 174, 175, 177, 179, 181, 185, 186, 187, 188, 189, 190, 191, 192},
-#          "val":{28, 43, 61, 69, 74, 94, 115, 121, 122, 124, 133, 138, 162, 163, 164, 184},
-#          "test": {29, 41, 49, 73, 83, 87, 88, 89, 97, 99, 111, 128, 131, 145, 146, 157, 176}}
-folds = generate_folds(splits, 10)
-data_path = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
+splits_Oxy = create_TrainValTest_sets(trainPatientsOxy, valPatientsOxy, testPatientsOxy)
+splits_LARC = create_TrainValTest_sets(trainPatientsLARC, valPatientsLARC, testPatientsLARC)
 
-generate_hdf5_file(folds, out_name='test_Oxy.h5', data_path=data_path, overwrite=True)
+#folds = generate_folds(splits, 10)
+
+data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
+data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
+
+generate_hdf5_file_Oxy(splits_Oxy, out_name='test_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
+#generate_hdf5_file_LARC(splits_LARC, out_name='test_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
 
 def print_detail(filename):
     with h5py.File(filename, 'r') as f:
@@ -266,6 +430,8 @@ def print_detail(filename):
             print(group)
             for ds_name in f[group].keys():
                 print('--', ds_name, f[group][ds_name].shape)
+                if ds_name == 'patient_ids':
+                    print('--', np.unique(f[group][ds_name]))
 
 print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/test_Oxy.h5')
 
