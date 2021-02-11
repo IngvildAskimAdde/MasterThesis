@@ -179,6 +179,8 @@ def split(patients, category, test_size, val_size):
 trainOxy, train_catOxy, train_indexOxy, valOxy, val_catOxy, val_indexOxy, testOxy, test_catOxy, test_indexOxy = split(patientsOxy, categoryOxy, 17, 16)
 trainLARC, train_catLARC, train_indexLARC, valLARC, val_catLARC, val_indexLARC, testLARC, test_catLARC, test_indexLARC = split(patientsLARC, categoryLARC, 13, 13)
 
+#TODO: Add StratifiedKFold to stratify the training and validation splits into 5 folds.
+
 #This section is needed when there is only one patient with a certain class
 
 ####################################################
