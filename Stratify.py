@@ -11,7 +11,7 @@ data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MaterThesis/1
 def categorize(data):
 
     category = np.zeros(len(data))
-
+    """
     for index, row in data.iterrows():
         if row['Kjønn'] == 'M' and row['Stage'] == 2:
             category[index] = 1
@@ -26,31 +26,82 @@ def categorize(data):
         elif row['Kjønn'] == 'K' and row['Stage'] == 4:
             category[index] = 6
         else:
-            print('Patient '+ str(index)+ ' unknown category')
+            print('Patient '+ str(index)+ ' unknown category')       
+    """
+    for index, row in data.iterrows():
+        if row['Kjønn'] == 'M' and row['Stage'] == 2 and row['DWI'] == 'YES':
+            category[index] = 1
+        elif row['Kjønn'] == 'M' and row['Stage'] == 2 and row['DWI'] == 'NO':
+            category[index] = 2
+        elif row['Kjønn'] == 'M' and row['Stage'] == 3 and row['DWI'] == 'YES':
+            category[index] = 3
+        elif row['Kjønn'] == 'M' and row['Stage'] == 3 and row['DWI'] == 'NO':
+            category[index] = 4
+        elif row['Kjønn'] == 'M' and row['Stage'] == 4 and row['DWI'] == 'YES':
+            category[index] = 5
+        elif row['Kjønn'] == 'M' and row['Stage'] == 4 and row['DWI'] == 'NO':
+            category[index] = 6
+
+        elif row['Kjønn'] == 'K' and row['Stage'] == 2 and row['DWI'] == 'YES':
+            category[index] = 7
+        elif row['Kjønn'] == 'K' and row['Stage'] == 2 and row['DWI'] == 'NO':
+            category[index] = 8
+        elif row['Kjønn'] == 'K' and row['Stage'] == 3 and row['DWI'] == 'YES':
+            category[index] = 9
+        elif row['Kjønn'] == 'K' and row['Stage'] == 3 and row['DWI'] == 'NO':
+            category[index] = 10
+        elif row['Kjønn'] == 'K' and row['Stage'] == 4 and row['DWI'] == 'YES':
+            category[index] = 11
+        elif row['Kjønn'] == 'K' and row['Stage'] == 4 and row['DWI'] == 'NO':
+            category[index] = 12
+
+        else:
+            print('Patient ' + str(index) + ' unknown category')
 
     return category
 
 
 def plot_distribution(category, title):
-
+    """
     stage = FixedFormatter(['T2', 'T3', 'T4'])
     men = [(category == 1).sum(), (category == 2).sum(), (category == 3).sum()]
     women = [(category == 4).sum(), (category == 5).sum(), (category == 6).sum()]
 
-    x = np.arange(3)
+    stage = FixedFormatter(['T2', 'T3', 'T4'])
+    men_with_dwi = [(category == 1).sum(), (category == 3).sum(), (category == 5).sum()]
+    women_with_dwi = [(category == 7).sum(), (category == 9).sum(), (category == 11).sum()]
+    men_without_dwi = [(category == 2).sum(), (category == 4).sum(), (category == 6).sum()]
+    women_without_dwi = [(category == 8).sum(), (category == 10).sum(), (category == 12).sum()]
+    """
+
+    stage = FixedFormatter(['T2 \n (DWI available)', 'T2 ', 'T3 \n (DWI available)', 'T3 \n', 'T4 \n (DWI available)', 'T4 \n'])
+    men = [(category == 1).sum(), (category == 2).sum(), (category == 3).sum() ,(category == 4).sum(), (category == 5).sum(), (category == 6).sum()]
+    women = [(category == 7).sum(), (category == 8).sum(), (category == 9).sum(), (category == 10).sum(), (category == 11).sum(), (category == 12).sum()]
+
+    #x = np.arange(3)
+    x = np.arange(6)
     width = 0.35
+    #width = 0.10
     xloc = FixedLocator(x)
 
-    matplotlib.rcParams.update({'font.size': 30})
+    matplotlib.rcParams.update({'font.size': 25})
     matplotlib.rcParams['font.family'] = "serif"
+    matplotlib.rcParams.update({'xtick.labelsize': 15})
 
     fig = plt.figure(figsize=(11,8))
     ax = fig.gca()
+
     rects1 = ax.bar(x-width/2, men, width, color='#2E7578', label='Men')
     rects2 = ax.bar(x+width/2, women, width, color='#97D2D4', label='Women')
 
+    """
+    rects1 = ax.bar(x-width/4, men_with_dwi, width, color='#2E7578', label='Men DWI')
+    rects2 = ax.bar(x-width/2, women_with_dwi, width, color='#97D2D4', label='Women DWI')
+    rects3 = ax.bar(x+width/2, men_without_dwi, width, label='Men')
+    rects4 = ax.bar(x+width/4, women_without_dwi, width, label='Women')
+    """
     ax.set_ylabel(r'Number of patients')
-    ax.set_xlabel(r'Stage')
+    ax.set_xlabel(r'Stage') #, fontsize=20)
     ax.xaxis.set_major_formatter(stage)
     ax.xaxis.set_major_locator(xloc)
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
@@ -70,7 +121,23 @@ def plot_distribution(category, title):
                     xytext=(0, 3),  # 3 points vertical offset
                     textcoords="offset points",
                     ha='center', va='bottom')
+    """
+    for rect in rects3:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
 
+    for rect in rects4:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+    """
     bottom, top = ax.get_ylim()
     ax.set_ylim(bottom, top+3)
     ax.legend()
@@ -84,7 +151,6 @@ def plot_distribution(category, title):
 data_LARC = data_LARC.drop(41)
 data_LARC['index'] = range(0,88)
 data_LARC = data_LARC.set_index('index')
-
 ##################################################
 
 patientsOxy = pd.DataFrame(data_Oxy).to_numpy()[:,0]
@@ -142,6 +208,3 @@ plot_distribution(test_cat, r'Test set')
 print(np.sort(train))
 print(np.sort(val))
 print(np.sort(test))
-
-
-
