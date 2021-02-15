@@ -6,7 +6,7 @@ from matplotlib.ticker import MaxNLocator, FixedLocator, FixedFormatter
 from sklearn.model_selection import StratifiedShuffleSplit, StratifiedKFold
 
 data_Oxy = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/200618_Inklusjonsdata_COPY.xlsx", index_col=0)
-data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/150701 Kliniske data endelig versjon.xlsx", index_col=0)
+data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/150701 Kliniske data endelig versjon ny.xlsx", index_col=0)
 
 def categorize(data):
 
@@ -183,52 +183,105 @@ def kfold_split(patients, category, number_of_folds):
     patient_dict = {}
     category_dict = {}
 
-    fold = 0
+    fold = 1
     for train_index, val_index in skf.split(patients, category):
         train = patients[train_index]
         train_cat = category[train_index]
         val = patients[val_index]
         val_cat = category[val_index]
 
-        patient_dict['Train'] = train
-        patient_dict['Validation'] = val
-        category_dict['Train'] = train_cat
-        category_dict['Validation'] = val_cat
+        patient_dict['Train' + str(fold)] = [set(train)]
+        patient_dict['Validation' + str(fold)] = [set(val)]
+        category_dict['Train' + str(fold)] = train_cat
+        category_dict['Validation' + str(fold)] = val_cat
+
+        folds_patient_dict['Fold' + str(fold)] = {}
+        folds_patient_dict['Fold' + str(fold)]['Train' + str(fold)] = patient_dict['Train' + str(fold)]
+        folds_patient_dict['Fold' + str(fold)]['Validation' + str(fold)] = patient_dict['Validation' + str(fold)]
 
         fold += 1
 
-        folds_patient_dict['Fold' + str(fold)] = patient_dict
-
     return folds_patient_dict
 
+"""
 def convert_kFoldDictArray_to_set(dictionary):
+
+    new_dict = {}
+
+    fold = 0
     for key in dictionary:
         sub_dictionary = dictionary[key]
         for sub_key in sub_dictionary:
-            print(sub_dictionary[sub_key])
-            dictionary[key][sub_key] = [set(sub_dictionary[sub_key])]
+            sub_dictionary[sub_key] = [set(sub_dictionary[sub_key])]
+        fold += 1
+        new_dict['Fold' + str(fold)] = sub_dictionary
 
-    return dictionary
+    return new_dict
+"""
 
-def create_traditionalSplit_dict(train, train_cat, val, val_cat, test, test_cat):
+def create_traditionalSplit_dict(train, val, test, smaller_dimensions=None):
+
     patient_dict = {}
-    patient_dict['Train'] = [set(train)]
-    patient_dict['Val'] = [set(val)]
-    patient_dict['Test'] = [set(test)]
+    patient_dict['Train'] = {}
+    patient_dict['Validation'] = {}
+    patient_dict['Test'] = {}
 
-    category_dict = {}
-    category_dict['Train'] = [set(train_cat)]
-    category_dict['Val'] = [set(val_cat)]
-    category_dict['Test'] = [set(test_cat)]
+    set_small_dimensions = set()
+    set_large_dimensions = set()
 
-    return patient_dict, category_dict
+    for patient in train:
+
+        if patient in smaller_dimensions:
+            set_small_dimensions.add(patient)
+        else:
+            set_large_dimensions.add(patient)
+
+    if (len(set_small_dimensions)==0):
+        patient_dict['Train']['512'] = [set_large_dimensions]
+    else:
+        patient_dict['Train']['512'] = [set_large_dimensions]
+        patient_dict['Train']['256'] = [set_small_dimensions]
+
+    set_small_dimensions = set()
+    set_large_dimensions = set()
+
+    for patient in val:
+
+        if patient in smaller_dimensions:
+            set_small_dimensions.add(patient)
+        else:
+            set_large_dimensions.add(patient)
+
+    if (len(set_small_dimensions)==0):
+        patient_dict['Validation']['512'] = [set_large_dimensions]
+    else:
+        patient_dict['Validation']['512'] = [set_large_dimensions]
+        patient_dict['Validation']['256'] = [set_small_dimensions]
+
+    set_small_dimensions = set()
+    set_large_dimensions = set()
+
+    for patient in test:
+
+        if patient in smaller_dimensions:
+            set_small_dimensions.add(patient)
+        else:
+            set_large_dimensions.add(patient)
+
+    if (len(set_small_dimensions)==0):
+        patient_dict['Test']['512'] = [set_large_dimensions]
+    else:
+        patient_dict['Test']['512'] = [set_large_dimensions]
+        patient_dict['Test']['256'] = [set_small_dimensions]
+
+    return patient_dict
 
 trainOxy, train_catOxy, train_indexOxy, valOxy, val_catOxy, val_indexOxy, testOxy, test_catOxy, test_indexOxy = traditional_split(patientsOxy, categoryOxy, 17, 16)
 trainLARC, train_catLARC, train_indexLARC, valLARC, val_catLARC, val_indexLARC, testLARC, test_catLARC, test_indexLARC = traditional_split(patientsLARC, categoryLARC, 13, 13)
 
 trainVal_patients_Oxy = np.append(valOxy, trainOxy)
 trainVal_category_Oxy = np.append(val_catOxy, train_catOxy)
-kfold_patients_Oxy = kfold_split(trainVal_patients_Oxy, trainVal_category_Oxy, 3)
+kfold_patients_Oxy = kfold_split(trainVal_patients_Oxy, trainVal_category_Oxy, 5)
 
 #This section is needed when there is only one patient with a certain class
 
@@ -244,7 +297,7 @@ categoryLARC = np.insert(categoryLARC, 0, 4)
 #kfold_patients_LARC, kfold_cat_LARC = kfold_split(trainVal_patients_LARC, trainVal_category_LARC, 5)
 
 
-"""
+
 category = np.append(categoryOxy, categoryLARC)
 
 train = np.append(trainOxy, trainLARC)
@@ -255,16 +308,16 @@ val_cat = np.append(val_catOxy, val_catLARC)
 
 test = np.append(testOxy, testLARC)
 test_cat = np.append(test_catOxy, test_catLARC)
-
+"""
 ####### PLOT AND PRINT TRAIN, VALIDATION AND TEST ################
-plot_distribution(categoryOxy, r'Total dataset')
-plot_distribution(train_catOxy, r'Training set')
-plot_distribution(val_catOxy, r'Validation set')
-plot_distribution(test_catOxy, r'Test set')
+#plot_distribution(categoryLARC, r'Total dataset')
+#plot_distribution(train_catLARC, r'Training set')
+#plot_distribution(val_catLARC, r'Validation set')
+#plot_distribution(test_catLARC, r'Test set')
 
-print(np.sort(trainOxy))
-print(np.sort(valOxy))
-print(np.sort(testOxy))
+print(np.sort(trainLARC))
+print(np.sort(valLARC))
+print(np.sort(testLARC))
 
 ####### PLOT AND PRINT K-FOLDS ##################################
 plot_distribution(kfold_cat_Oxy['Train0'], r'Total dataset')
@@ -278,25 +331,35 @@ plot_distribution(kfold_cat_Oxy['Validation3'], r'Total dataset')
 plot_distribution(kfold_cat_Oxy['Train4'], r'Total dataset')
 plot_distribution(kfold_cat_Oxy['Validation4'], r'Total dataset')
 
-print('Train0:', np.sort(kfold_patients_Oxy['Train0']))
-print('Validation0:', np.sort(kfold_patients_Oxy['Validation0']))
-print('Train1:', np.sort(kfold_patients_Oxy['Train1']))
-print('Validation1:', np.sort(kfold_patients_Oxy['Validation1']))
-print('Train2:', np.sort(kfold_patients_Oxy['Train2']))
-print('Validation2:', np.sort(kfold_patients_Oxy['Validation2']))
-print('Train3:', np.sort(kfold_patients_Oxy['Train3']))
-print('Validation3:', np.sort(kfold_patients_Oxy['Validation3']))
-print('Train4:', np.sort(kfold_patients_Oxy['Train4']))
-print('Validation4:', np.sort(kfold_patients_Oxy['Validation4']))
-"""
-
-
-kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
+print('Fold1:')
+print('Train:', np.sort(kfold_patients_Oxy['Fold1']['Train1']))
+print('Validation:', np.sort(kfold_patients_Oxy['Fold1']['Validation1']))
+print('Fold2:')
+print('Train:', np.sort(kfold_patients_Oxy['Fold2']['Train2']))
+print('Validation:', np.sort(kfold_patients_Oxy['Fold2']['Validation2']))
+print('Fold3:')
+print('Train:', np.sort(kfold_patients_Oxy['Fold3']['Train3']))
+print('Validation:', np.sort(kfold_patients_Oxy['Fold3']['Validation3']))
+print('Fold4:')
+print('Train:', np.sort(kfold_patients_Oxy['Fold4']['Train4']))
+print('Validation:', np.sort(kfold_patients_Oxy['Fold4']['Validation4']))
+print('Fold5:')
+print('Train:', np.sort(kfold_patients_Oxy['Fold5']['Train5']))
+print('Validation:', np.sort(kfold_patients_Oxy['Fold5']['Validation5']))
 
 
 #kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
-#tradSplit_patients_Oxy, tradSplit_category_Oxy = create_traditionalSplit_dict(trainOxy, train_catOxy, valOxy, val_catOxy, testOxy, test_catOxy)
+"""
 
-f = open("Oxy_kfold_patients_dict.txt","w")
-f.write(str(kfold_patients_Oxy))
+small_dimensions_patients_Oxy = []
+tradSplit_patients_Oxy = create_traditionalSplit_dict(trainOxy, valOxy, testOxy, smaller_dimensions=small_dimensions_patients_Oxy)
+
+small_dimensions_patients = ['LARC-RRP-011','LARC-RRP-013','LARC-RRP-014','LARC-RRP-015','LARC-RRP-016','LARC-RRP-019']
+tradSplit_patients_LARC = create_traditionalSplit_dict(trainLARC, valLARC, testLARC, smaller_dimensions=small_dimensions_patients)
+
+tradSplit_patients_LARC_Oxy = create_traditionalSplit_dict(train, val, test, smaller_dimensions=small_dimensions_patients)
+
+
+f = open("LARC_Oxy_tradSplit_patients_dict.txt","w")
+f.write(str(tradSplit_patients_LARC_Oxy))
 f.close()
