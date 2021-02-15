@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator, FixedLocator, FixedFormatter
 from sklearn.model_selection import StratifiedShuffleSplit, StratifiedKFold
 
-data_Oxy = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MaterThesis/200618_Inklusjonsdata_COPY.xlsx", index_col=0)
-data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MaterThesis/150701 Kliniske data endelig versjon.xlsx", index_col=0)
+data_Oxy = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/200618_Inklusjonsdata_COPY.xlsx", index_col=0)
+data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/150701 Kliniske data endelig versjon.xlsx", index_col=0)
 
 def categorize(data):
 
@@ -179,6 +179,7 @@ def traditional_split(patients, category, test_size, val_size):
 def kfold_split(patients, category, number_of_folds):
     skf = StratifiedKFold(n_splits=number_of_folds)
 
+    folds_patient_dict = {}
     patient_dict = {}
     category_dict = {}
 
@@ -189,12 +190,36 @@ def kfold_split(patients, category, number_of_folds):
         val = patients[val_index]
         val_cat = category[val_index]
 
-        patient_dict['Train' + str(fold)] = train
-        patient_dict['Validation' + str(fold)] = val
-        category_dict['Train' + str(fold)] = train_cat
-        category_dict['Validation' + str(fold)] = val_cat
+        patient_dict['Train'] = train
+        patient_dict['Validation'] = val
+        category_dict['Train'] = train_cat
+        category_dict['Validation'] = val_cat
 
         fold += 1
+
+        folds_patient_dict['Fold' + str(fold)] = patient_dict
+
+    return folds_patient_dict
+
+def convert_kFoldDictArray_to_set(dictionary):
+    for key in dictionary:
+        sub_dictionary = dictionary[key]
+        for sub_key in sub_dictionary:
+            print(sub_dictionary[sub_key])
+            dictionary[key][sub_key] = [set(sub_dictionary[sub_key])]
+
+    return dictionary
+
+def create_traditionalSplit_dict(train, train_cat, val, val_cat, test, test_cat):
+    patient_dict = {}
+    patient_dict['Train'] = [set(train)]
+    patient_dict['Val'] = [set(val)]
+    patient_dict['Test'] = [set(test)]
+
+    category_dict = {}
+    category_dict['Train'] = [set(train_cat)]
+    category_dict['Val'] = [set(val_cat)]
+    category_dict['Test'] = [set(test_cat)]
 
     return patient_dict, category_dict
 
@@ -203,7 +228,7 @@ trainLARC, train_catLARC, train_indexLARC, valLARC, val_catLARC, val_indexLARC, 
 
 trainVal_patients_Oxy = np.append(valOxy, trainOxy)
 trainVal_category_Oxy = np.append(val_catOxy, train_catOxy)
-kfold_patients_Oxy, kfold_cat_Oxy = kfold_split(trainVal_patients_Oxy, trainVal_category_Oxy, 5)
+kfold_patients_Oxy = kfold_split(trainVal_patients_Oxy, trainVal_category_Oxy, 3)
 
 #This section is needed when there is only one patient with a certain class
 
@@ -214,9 +239,9 @@ trainLARC = np.insert(trainLARC, 0, 'LARC-RRP-045')
 categoryLARC = np.insert(categoryLARC, 0, 4)
 ###################################################
 
-trainVal_patients_LARC = np.append(valLARC, trainLARC)
-trainVal_category_LARC = np.append(val_catLARC, train_catLARC)
-kfold_patients_LARC, kfold_cat_LARC = kfold_split(trainVal_patients_LARC, trainVal_category_LARC, 5)
+#trainVal_patients_LARC = np.append(valLARC, trainLARC)
+#trainVal_category_LARC = np.append(val_catLARC, train_catLARC)
+#kfold_patients_LARC, kfold_cat_LARC = kfold_split(trainVal_patients_LARC, trainVal_category_LARC, 5)
 
 
 """
@@ -232,15 +257,15 @@ test = np.append(testOxy, testLARC)
 test_cat = np.append(test_catOxy, test_catLARC)
 
 ####### PLOT AND PRINT TRAIN, VALIDATION AND TEST ################
-plot_distribution(category, r'Total dataset')
-plot_distribution(train_cat, r'Training set')
-plot_distribution(val_cat, r'Validation set')
-plot_distribution(test_cat, r'Test set')
+plot_distribution(categoryOxy, r'Total dataset')
+plot_distribution(train_catOxy, r'Training set')
+plot_distribution(val_catOxy, r'Validation set')
+plot_distribution(test_catOxy, r'Test set')
 
-print(np.sort(train))
-print(np.sort(val))
-print(np.sort(test))
-"""
+print(np.sort(trainOxy))
+print(np.sort(valOxy))
+print(np.sort(testOxy))
+
 ####### PLOT AND PRINT K-FOLDS ##################################
 plot_distribution(kfold_cat_Oxy['Train0'], r'Total dataset')
 plot_distribution(kfold_cat_Oxy['Validation0'], r'Total dataset')
@@ -263,7 +288,15 @@ print('Train3:', np.sort(kfold_patients_Oxy['Train3']))
 print('Validation3:', np.sort(kfold_patients_Oxy['Validation3']))
 print('Train4:', np.sort(kfold_patients_Oxy['Train4']))
 print('Validation4:', np.sort(kfold_patients_Oxy['Validation4']))
+"""
+
+
+kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
+
+
+#kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
+#tradSplit_patients_Oxy, tradSplit_category_Oxy = create_traditionalSplit_dict(trainOxy, train_catOxy, valOxy, val_catOxy, testOxy, test_catOxy)
 
 f = open("Oxy_kfold_patients_dict.txt","w")
-f.write( str(kfold_patients_Oxy) )
+f.write(str(kfold_patients_Oxy))
 f.close()
