@@ -1,7 +1,7 @@
 
 import h5py
 import random
-from collections import defaultdict
+from collections import defaultdict, ChainMap
 import numpy as np
 import SimpleITK as sitk
 from tqdm import tqdm
@@ -10,6 +10,7 @@ import nibabel as nib
 import ast
 from typing import (Callable, DefaultDict, Dict, Generator, Iterable, List, Set, Tuple, Union)
 import sys
+
 
 
 trainPatientsOxy = ['Oxytarget_24', 'Oxytarget_27', 'Oxytarget_31', 'Oxytarget_32',
@@ -208,7 +209,6 @@ def extend_dataset(dataset:h5py.Dataset, data:np.ndarray) -> h5py.Dataset:
     newshape = (dataset.shape[0] + data.shape[0], *dataset.shape[1:])
     dataset.resize(newshape)
     dataset[shape[0]:] = data
-    print(sys.getsizeof(dataset[shape[0]:]))
     return dataset
 
 
@@ -223,11 +223,19 @@ def get_patient_id_from_dict(dictionary):
     id_dict = {}
 
     for key, element in dictionary.items():
-        ids = set()
+        id_dict[key] = {}
         for split in element:
-            for patient in split:
-                ids.add(int(patient.split(' ')[1]))
-        id_dict[key] = [ids]
+            ids = set()
+            for patient_list in dictionary[key][split]:
+                for patient in patient_list:
+                    if patient.startswith('Oxy'):
+                        ids.add(int(patient.split(' ')[1]))
+                    else:
+                        ids.add(int(patient.split('-')[2]))
+
+            id_dict[key][split] = [ids]
+            ids = None
+
     return id_dict
 
 def get_patient_id_LARC(patient: Path)-> int:
@@ -236,7 +244,7 @@ def get_patient_id_LARC(patient: Path)-> int:
     """
     return int(patient.name.split('-')[2])
 
-def generate_fold_group_Oxy(
+def generate_fold_group(
         group:h5py.Group, patient_folders:Iterable[Path])->None:
     """
     Generate dataset for a single fold.
@@ -246,9 +254,14 @@ def generate_fold_group_Oxy(
     patient_ids = None
     for patient in tqdm(patient_folders):
         print(patient)
-        images, masks = load_t2w_Oxy(patient)
-        patient_id = get_patient_id_Oxy(patient)
-        patient_id = np.ones(images.shape[0])*patient_id
+        if str(patient).endswith('PRE'):
+            images, masks = load_t2w_Oxy(patient)
+            patient_id = get_patient_id_Oxy(patient)
+            patient_id = np.ones(images.shape[0])*patient_id
+        else:
+            images, masks = load_t2w_LARC(patient)
+            patient_id = get_patient_id_LARC(patient)
+            patient_id = np.ones(images.shape[0]) * patient_id
 
         if input_dataset is None:
             input_dataset = populate_initial_dataset(images, group,"input")
@@ -259,28 +272,6 @@ def generate_fold_group_Oxy(
             mask_dataset = extend_dataset(mask_dataset, masks)
             patient_ids = extend_dataset(patient_ids, patient_id)
 
-def generate_fold_group_LARC(
-        group:h5py.Group, patient_folders:Iterable[Path])->None:
-    """
-    Generate dataset for a single fold.
-    """
-    input_dataset = None
-    mask_dataset = None
-    patient_ids = None
-    for patient in tqdm(patient_folders):
-        print(patient)
-        images, masks = load_t2w_LARC(patient)
-        patient_id = get_patient_id_LARC(patient)
-        patient_id = np.ones(images.shape[0])*patient_id
-
-        if input_dataset is None:
-            input_dataset = populate_initial_dataset(images, group,"input")
-            mask_dataset = populate_initial_dataset(masks, group, "target_an")
-            patient_ids = populate_initial_dataset(patient_id, group, "patient_ids")
-        else:
-            input_dataset = extend_dataset(input_dataset, images)
-            mask_dataset = extend_dataset(mask_dataset, masks)
-            patient_ids = extend_dataset(patient_ids, patient_id)
 
 def patient_iter_Oxy(data_folder:str, id_list:List[int])->Generator[Path,None,None]:
     """
@@ -358,34 +349,36 @@ def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], destination_path:str
         with h5py.File(out_file, "w") as h5:
             for split in folds:  # split is usually train, test or val
                 print(split)
+                split_group = h5.create_group(split)
+                for dimension in folds[split]:
+                    for dimension_list in folds[split][dimension]:
+                        foldname = dimension
+                        print(foldname)
 
-                for fold in folds[split]:
-                    foldname = split
-                    print(foldname)
-
-                    # Update h5py
-                    group = h5.create_group(foldname)
-                    fold_names[split].append(foldname)
-                    fold = sorted(patient_iter_Oxy(data_path, fold))
-                    generate_fold_group_Oxy(group, fold)
+                        # Update h5py
+                        sub_group = split_group.create_group(foldname)
+                        fold_names[split].append(foldname)
+                        fold = sorted(patient_iter_Oxy(data_path, dimension_list))
+                        generate_fold_group(sub_group, fold)
 
     else:
         print('Running k-fold mode')
         fold_num = 0
         with h5py.File(out_file, "w") as h5:
-            for split in folds: #split is usually train, test or val
-                print(split)
+            for fold_number in folds:
+                print(fold_number)
+                fold_group = h5.create_group(fold_number)
+                for split in folds[fold_number]: #split is usually train, test or val
+                    for split_list in folds[fold_number][split]:
+                        foldname = split
+                        print(foldname)
+                        fold_num += 1
 
-                for fold in folds[split]:
-                    foldname = f"fold_{fold_num}"
-                    print(foldname)
-                    fold_num += 1
-
-                    #Update h5py
-                    group = h5.create_group(foldname)
-                    fold_names[split].append(foldname)
-                    fold = sorted(patient_iter_Oxy(data_path, fold))
-                    generate_fold_group_Oxy(group, fold)
+                        #Update h5py
+                        sub_group = fold_group.create_group(foldname)
+                        fold_names[split].append(foldname)
+                        fold = sorted(patient_iter_Oxy(data_path, split_list))
+                        generate_fold_group(sub_group, fold)
 
     return fold_names
 
@@ -408,16 +401,17 @@ def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_
         with h5py.File(out_file, "w") as h5:
             for split in folds:  # split is usually train, test or val
                 print(split)
+                split_group = h5.create_group(split)
+                for dimension in folds[split]:
+                    for dimension_list in folds[split][dimension]:
+                        foldname = dimension
+                        print(foldname)
 
-                for fold in folds[split]:
-                    foldname = split
-                    print(foldname)
-
-                    # Update h5py
-                    group = h5.create_group(foldname)
-                    fold_names[split].append(foldname)
-                    fold = sorted(patient_iter_LARC(data_path, fold))
-                    generate_fold_group_LARC(group, fold)
+                        # Update h5py
+                        sub_group = split_group.create_group(foldname)
+                        fold_names[split].append(foldname)
+                        fold = sorted(patient_iter_LARC(data_path, dimension_list))
+                        generate_fold_group(sub_group, fold)
 
     else:
         print('Running k-fold mode')
@@ -435,34 +429,100 @@ def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_
                     group = h5.create_group(foldname)
                     fold_names[split].append(foldname)
                     fold = sorted(patient_iter_LARC(data_path, fold))
-                    generate_fold_group_LARC(group, fold)
+                    generate_fold_group(group, fold)
 
     return fold_names
 
+def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str, List[Set[int]]], destination_path:str, out_name:str, data_path1:Path, data_path2:Path, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
+    """
+    Generate a HDF5 file based on dataset splits.
+
+    fold_names is a dictionary that maps the split names to a list of folds names in each split.
+    NB! Folds2 is the dataset with the most varying image sizes!!!
+    """
+
+    fold_names = defaultdict(list)
+
+    #out_file = data_path / out_name
+    out_file = destination_path / out_name
+    if not overwrite and out_file.is_file():
+        raise RuntimeError("File exists")
+
+    if not k_fold:
+        print('Running train, val and test mode')
+
+        with h5py.File(out_file, "w") as h5:
+            for split in folds1:  # split is usually train, test or val
+                print(split)
+                split_group = h5.create_group(split)
+
+                for dimension in folds2[split]:
+                    if dimension == '512':
+                        for dimension_list in folds2[split][dimension]:
+                            foldname = dimension
+                            print(foldname)
+
+                            sub_group = split_group.create_group(foldname)
+                            fold_names[split].append(foldname)
+                            fold1 = sorted(patient_iter_LARC(data_path2, dimension_list))
 
 
-#splits_Oxy = create_TrainValTest_sets(trainPatientsOxy, valPatientsOxy, testPatientsOxy)
-splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
+                        for dimension in folds1[split]:
+                            for dimension_list in folds1[split][dimension]:
+                                fold2 = sorted(patient_iter_Oxy(data_path1, dimension_list))
+
+                        fold = fold1 + fold2
+                        generate_fold_group(sub_group, fold)
+
+
+                    else:
+                        for dimension_list in folds2[split][dimension]:
+                            foldname = dimension
+                            print(foldname)
+
+                            sub_group = split_group.create_group(foldname)
+                            fold_names[split].append(foldname)
+                            fold = sorted(patient_iter_LARC(data_path2, dimension_list))
+                            generate_fold_group(sub_group, fold)
+
+
+splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_tradSplit_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_LARC = create_TrainValTest_sets(trainPatientsLARC, valPatientsLARC, testPatientsLARC)
+splits_LARC = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_tradSplit_patients_dict.txt')
+splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-#folds = generate_folds(splits, 10)
+splits_LARC_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_Oxy_tradSplit_patients_dict.txt')
+splits_ids_LARC_Oxy = get_patient_id_from_dict(splits_LARC_Oxy)
 
 data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
 
-generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
-#generate_hdf5_file_LARC(splits_LARC, out_name='test_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
+generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
+#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
 
-def print_detail(filename):
-    with h5py.File(filename, 'r') as f:
-        for group in f.keys():
-            print(group)
-            for ds_name in f[group].keys():
-                print('--', ds_name, f[group][ds_name].shape)
-                if ds_name == 'patient_ids':
-                    print('--', np.unique(f[group][ds_name]))
+def print_detail(filename, k_fold=False):
 
-print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5')
+    if not k_fold:
+        with h5py.File(filename, 'r') as f:
+            for group in f.keys():
+                print(group)
+                for ds_name in f[group].keys():
+                    print('--', ds_name, f[group][ds_name].shape)
+                    if ds_name == 'patient_ids':
+                        print('---->', np.unique(f[group][ds_name]))
+    else:
+        with h5py.File(filename, 'r') as f:
+            for group in f.keys():
+                print(group)
+                for sub_group in f[group].keys():
+                    print('--', sub_group)
+                    for ds_name in f[group][sub_group].keys():
+                        print('----', ds_name, f[group][sub_group][ds_name].shape)
+                        if ds_name == 'patient_ids':
+                            print('----> Patient ids:', np.unique(f[group][sub_group][ds_name]))
 
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
