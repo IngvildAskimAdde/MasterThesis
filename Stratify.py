@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator, FixedLocator, FixedFormatter
 from sklearn.model_selection import StratifiedShuffleSplit, StratifiedKFold
 
-data_Oxy = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/200618_Inklusjonsdata_COPY.xlsx", index_col=0)
-data_LARC = pd.read_excel("/Users/ingvildaskimadde/Documents/Skole/MasterThesis/150701 Kliniske data endelig versjon ny.xlsx", index_col=0)
+data_Oxy = pd.read_excel("/Volumes/HARDDISK/MasterThesis/Excel_data/200618_Inklusjonsdata_COPY_ny.xlsx", index_col=0)
+data_LARC = pd.read_excel("/Volumes/HARDDISK/MasterThesis/Excel_data/150701 Kliniske data endelig versjon ny.xlsx", index_col=0)
 
 def categorize(data):
 
@@ -349,7 +349,7 @@ print('Validation:', np.sort(kfold_patients_Oxy['Fold5']['Validation5']))
 
 
 #kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
-"""
+
 
 small_dimensions_patients_Oxy = []
 tradSplit_patients_Oxy = create_traditionalSplit_dict(trainOxy, valOxy, testOxy, smaller_dimensions=small_dimensions_patients_Oxy)
@@ -358,8 +358,8 @@ small_dimensions_patients = ['LARC-RRP-011','LARC-RRP-013','LARC-RRP-014','LARC-
 tradSplit_patients_LARC = create_traditionalSplit_dict(trainLARC, valLARC, testLARC, smaller_dimensions=small_dimensions_patients)
 
 tradSplit_patients_LARC_Oxy = create_traditionalSplit_dict(train, val, test, smaller_dimensions=small_dimensions_patients)
+"""
 
-
-f = open("LARC_Oxy_tradSplit_patients_dict.txt","w")
-f.write(str(tradSplit_patients_LARC_Oxy))
+f = open("Oxy_kFold_patients_dict.txt","w")
+f.write(str(kfold_patients_Oxy))
 f.close()
