@@ -489,6 +489,9 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
 splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_tradSplit_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
+splits_kfold_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
+splits_kfold_ids_Oxy = get_patient_id_from_dict(splits_kfold_Oxy)
+
 splits_LARC = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
@@ -499,8 +502,12 @@ data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
-generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
+#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
+
+generate_hdf5_file_Oxy(splits_kfold_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
+
+
 
 def print_detail(filename, k_fold=False):
 
@@ -524,5 +531,6 @@ def print_detail(filename, k_fold=False):
                             print('----> Patient ids:', np.unique(f[group][sub_group][ds_name]))
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
-print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
