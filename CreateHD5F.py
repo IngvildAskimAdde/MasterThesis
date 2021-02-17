@@ -3,71 +3,12 @@ import h5py
 import random
 from collections import defaultdict, ChainMap
 import numpy as np
-import SimpleITK as sitk
 from tqdm import tqdm
 from pathlib import Path
 import nibabel as nib
 import ast
 from typing import (Callable, DefaultDict, Dict, Generator, Iterable, List, Set, Tuple, Union)
-import sys
 
-
-
-trainPatientsOxy = ['Oxytarget_24', 'Oxytarget_27', 'Oxytarget_31', 'Oxytarget_32',
- 'Oxytarget_40', 'Oxytarget_44', 'Oxytarget_45', 'Oxytarget_46',
- 'Oxytarget_47', 'Oxytarget_48', 'Oxytarget_50', 'Oxytarget_51',
- 'Oxytarget_52', 'Oxytarget_55', 'Oxytarget_56', 'Oxytarget_57',
- 'Oxytarget_58', 'Oxytarget_59', 'Oxytarget_64', 'Oxytarget_65',
- 'Oxytarget_67', 'Oxytarget_68', 'Oxytarget_72', 'Oxytarget_75',
- 'Oxytarget_77', 'Oxytarget_78', 'Oxytarget_79', 'Oxytarget_80',
- 'Oxytarget_85', 'Oxytarget_90', 'Oxytarget_91', 'Oxytarget_95',
- 'Oxytarget_96', 'Oxytarget_103', 'Oxytarget_106', 'Oxytarget_108',
- 'Oxytarget_110', 'Oxytarget_113', 'Oxytarget_116', 'Oxytarget_118',
- 'Oxytarget_120', 'Oxytarget_123', 'Oxytarget_125', 'Oxytarget_126',
- 'Oxytarget_127', 'Oxytarget_130', 'Oxytarget_134', 'Oxytarget_143',
- 'Oxytarget_144', 'Oxytarget_148', 'Oxytarget_149', 'Oxytarget_150',
- 'Oxytarget_153', 'Oxytarget_154', 'Oxytarget_155', 'Oxytarget_156',
- 'Oxytarget_160', 'Oxytarget_165', 'Oxytarget_166', 'Oxytarget_169',
- 'Oxytarget_170', 'Oxytarget_171', 'Oxytarget_172', 'Oxytarget_173',
- 'Oxytarget_174', 'Oxytarget_175', 'Oxytarget_177', 'Oxytarget_179',
- 'Oxytarget_181', 'Oxytarget_185', 'Oxytarget_186', 'Oxytarget_187',
- 'Oxytarget_188', 'Oxytarget_189', 'Oxytarget_190', 'Oxytarget_191',
- 'Oxytarget_192']
-valPatientsOxy = ['OxyTarget_028', 'OxyTarget_043', 'OxyTarget_061', 'OxyTarget_069',
- 'OxyTarget_074', 'OxyTarget_094', 'OxyTarget_115', 'OxyTarget_121',
- 'OxyTarget_122', 'OxyTarget_124', 'OxyTarget_133', 'OxyTarget_138',
- 'OxyTarget_162', 'OxyTarget_163', 'OxyTarget_164', 'OxyTarget_184']
-testPatientsOxy = ['OxyTarget_029', 'OxyTarget_041', 'OxyTarget_049', 'OxyTarget_073',
- 'OxyTarget_083', 'OxyTarget_087', 'OxyTarget_088', 'OxyTarget_089',
- 'OxyTarget_097', 'OxyTarget_099', 'OxyTarget_111', 'OxyTarget_128',
- 'OxyTarget_131', 'OxyTarget_145', 'OxyTarget_146', 'OxyTarget_157',
- 'OxyTarget_176']
-
-
-trainPatientsLARC = ['LARC-RRP-001', 'LARC-RRP-003', 'LARC-RRP-006', 'LARC-RRP-007',
- 'LARC-RRP-010', 'LARC-RRP-015', 'LARC-RRP-016', 'LARC-RRP-017',
- 'LARC-RRP-018', 'LARC-RRP-019', 'LARC-RRP-024', 'LARC-RRP-026',
- 'LARC-RRP-027', 'LARC-RRP-029', 'LARC-RRP-030', 'LARC-RRP-031',
- 'LARC-RRP-033', 'LARC-RRP-035', 'LARC-RRP-036', 'LARC-RRP-037',
- 'LARC-RRP-038', 'LARC-RRP-039', 'LARC-RRP-040', 'LARC-RRP-041',
- 'LARC-RRP-042', 'LARC-RRP-043', 'LARC-RRP-045', 'LARC-RRP-047',
- 'LARC-RRP-048', 'LARC-RRP-049', 'LARC-RRP-050', 'LARC-RRP-051',
- 'LARC-RRP-052', 'LARC-RRP-053', 'LARC-RRP-055', 'LARC-RRP-058',
- 'LARC-RRP-059', 'LARC-RRP-060', 'LARC-RRP-062', 'LARC-RRP-064',
- 'LARC-RRP-065', 'LARC-RRP-067', 'LARC-RRP-069', 'LARC-RRP-070',
- 'LARC-RRP-071', 'LARC-RRP-073', 'LARC-RRP-074', 'LARC-RRP-075',
- 'LARC-RRP-076', 'LARC-RRP-077', 'LARC-RRP-078', 'LARC-RRP-079',
- 'LARC-RRP-080', 'LARC-RRP-081', 'LARC-RRP-083', 'LARC-RRP-086',
- 'LARC-RRP-087', 'LARC-RRP-089', 'LARC-RRP-091', 'LARC-RRP-092',
- 'LARC-RRP-093', 'LARC-RRP-094', 'LARC-RRP-095']
-valPatientsLARC = ['LARC-RRP-009', 'LARC-RRP-011', 'LARC-RRP-013', 'LARC-RRP-028',
- 'LARC-RRP-044', 'LARC-RRP-054', 'LARC-RRP-057', 'LARC-RRP-068',
- 'LARC-RRP-072', 'LARC-RRP-084', 'LARC-RRP-085', 'LARC-RRP-088',
- 'LARC-RRP-090']
-testPatientsLARC = ['LARC-RRP-004', 'LARC-RRP-005', 'LARC-RRP-008', 'LARC-RRP-014',
- 'LARC-RRP-020', 'LARC-RRP-021', 'LARC-RRP-022', 'LARC-RRP-023',
- 'LARC-RRP-032', 'LARC-RRP-034', 'LARC-RRP-066', 'LARC-RRP-096',
- 'LARC-RRP-099']
 
 def read_dictionary(file_path):
     """
@@ -489,23 +430,23 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
 splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_tradSplit_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_kfold_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
-splits_kfold_ids_Oxy = get_patient_id_from_dict(splits_kfold_Oxy)
+#splits_kfold_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
+#splits_kfold_ids_Oxy = get_patient_id_from_dict(splits_kfold_Oxy)
 
 splits_LARC = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-splits_LARC_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_Oxy_tradSplit_patients_dict.txt')
-splits_ids_LARC_Oxy = get_patient_id_from_dict(splits_LARC_Oxy)
+#splits_LARC_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_Oxy_tradSplit_patients_dict.txt')
+#splits_ids_LARC_Oxy = get_patient_id_from_dict(splits_LARC_Oxy)
 
 data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
-#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
+generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
 
-generate_hdf5_file_Oxy(splits_kfold_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
+#generate_hdf5_file_Oxy(splits_kfold_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 
 
 
@@ -519,6 +460,7 @@ def print_detail(filename, k_fold=False):
                     print('--', ds_name, f[group][ds_name].shape)
                     if ds_name == 'patient_ids':
                         print('---->', np.unique(f[group][ds_name]))
+
     else:
         with h5py.File(filename, 'r') as f:
             for group in f.keys():
@@ -529,8 +471,9 @@ def print_detail(filename, k_fold=False):
                         print('----', ds_name, f[group][sub_group][ds_name].shape)
                         if ds_name == 'patient_ids':
                             print('----> Patient ids:', np.unique(f[group][sub_group][ds_name]))
+                            print('----> Patient ids:', len(np.unique(f[group][sub_group][ds_name])))
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
-print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
