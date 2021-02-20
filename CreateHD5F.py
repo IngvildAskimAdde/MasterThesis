@@ -8,6 +8,7 @@ from pathlib import Path
 import nibabel as nib
 import ast
 from typing import (Callable, DefaultDict, Dict, Generator, Iterable, List, Set, Tuple, Union)
+import matplotlib.pyplot as plt
 
 
 def read_dictionary(file_path):
@@ -429,11 +430,11 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             generate_fold_group(sub_group, fold)
 
 
-splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
-splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
+#splits_Oxy = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/Oxy_kfold_patients_dict.txt')
+#splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_LARC = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_kfold_patients_dict.txt')
-splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
+#splits_LARC = read_dictionary('/Users/ingvildaskimadde/Documents/Skole/Code/MasterThesis/LARC_kfold_patients_dict.txt')
+#splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
 data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
@@ -470,6 +471,16 @@ def print_detail(filename, k_fold=False):
                             print('----> Patient ids:', np.unique(f[group][sub_group][ds_name]))
                             print('----> Patient ids:', len(np.unique(f[group][sub_group][ds_name])))
 
+def visulize_images(path_to_file, start_slice, end_slice):
+
+    with h5py.File(path_to_file, 'r') as f:
+        images = f['train/352']['input'][start_slice:end_slice]
+        masks = f['train/352']['target_an'][start_slice:end_slice]
+
+    plt.imshow(images[0][..., 0], 'gray')
+    plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
+    plt.show()
+
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
@@ -477,3 +488,8 @@ def print_detail(filename, k_fold=False):
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
+
+print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
+
+visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
+
