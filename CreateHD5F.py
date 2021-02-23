@@ -481,11 +481,11 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
