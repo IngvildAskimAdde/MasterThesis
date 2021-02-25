@@ -45,7 +45,8 @@ def plot_data(dataframe, yname):
 
     plt.xlabel('Epoch')
     plt.ylabel(yname)
-    plt.title('Training')
+    plt.ylim(0,1)
+    #plt.title('Validation')
     plt.legend()
     fig.tight_layout()
     plt.show()
@@ -64,7 +65,7 @@ def calculate_median(dataframe):
     return median, std
 
 
-dataframe = create_dataframe(dataframes, 'dice', 93)
+dataframe = create_dataframe(dataframes, 'val_dice', 93)
 plot_data(dataframe, 'Dice')
 median, std = calculate_median(dataframe)
 
