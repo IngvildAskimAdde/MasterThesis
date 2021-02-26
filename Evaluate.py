@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import  matplotlib
 
-data_valfold1 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_1/logs.csv')
-data_valfold2 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_2/logs.csv')
-data_valfold3 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_3/logs.csv')
-data_valfold4 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_4/logs.csv')
-data_valfold5 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_5/logs.csv')
+LARC_ID_6 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_6/logs.csv')
+#data_valfold2 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_2/logs.csv')
+#data_valfold3 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_3/logs.csv')
+#data_valfold4 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_4/logs.csv')
+#data_valfold5 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_5/logs.csv')
 
-dataframes = [data_valfold1, data_valfold2, data_valfold3, data_valfold4, data_valfold5]
+#dataframes = [data_valfold1, data_valfold2, data_valfold3, data_valfold4, data_valfold5]
 
 def create_dataframe(dataframes_list, colname, maxsize_of_dataframe):
     """
@@ -64,10 +64,21 @@ def calculate_median(dataframe):
 
     return median, std
 
+def find_best_epoch(dataframe):
 
-dataframe = create_dataframe(dataframes, 'val_dice', 93)
-plot_data(dataframe, 'Dice')
-median, std = calculate_median(dataframe)
+    max_dice = dataframe['val_dice'].max()
+    max_dice_index = dataframe[dataframe['val_dice'] == dataframe['val_dice'].max()].index.values
+    best_epoch = max_dice_index+1
+    #min_loss = dataframe['val_loss'].min()
+    #min_loss_index = dataframe[dataframe['val_loss'] == dataframe['val_loss'].min()].index.values
+
+    return max_dice, best_epoch
+
+#dataframe = create_dataframe(dataframes, 'val_dice', 93)
+#plot_data(dataframe, 'Dice')
+#median, std = calculate_median(dataframe)
+
+max_dice, epoch = find_best_epoch(LARC_ID_6)
 
 
 
