@@ -7,11 +7,22 @@ import numpy as np
 import pandas as pd
 import os
 
+"""
+00/predicted = prediction of images with dimension 352
+01/predicted = prediction of images with dimension 256
+
+00/y = target of images with dimension 352
+01/y = target of images with dimension 256
+
+00/x = input of images with dimension 352
+01/x = input of images with dimension 256
+"""
 
 class H5Metric:
+
     def __init__(self, ref_file, save_file, metric_name='score',
-                 predicted_dataset='predicted',
-                 target_dataset='y', batch_size=4,
+                 predicted_dataset='01/predicted',
+                 target_dataset='01/y', batch_size=4,
                  map_file=None, map_column=None):
         self.metric_name = metric_name
         self.ref_file = ref_file
@@ -72,8 +83,8 @@ class H5Metric:
 
 class H5CalculateFScore(H5Metric):
     def __init__(self, ref_file, save_file, metric_name='f1_score',
-                 predicted_dataset='predicted',
-                 target_dataset='y', batch_size=4, beta=1, threshold=None,
+                 predicted_dataset='01/predicted',
+                 target_dataset='01/y', batch_size=4, beta=1, threshold=None,
                  map_file=None, map_column=None):
         super().__init__(ref_file, save_file, metric_name,
                          predicted_dataset,
@@ -128,8 +139,8 @@ class H5MetaDataMapping:
 
 class H5Merge2dSlice:
     def __init__(self, ref_file, map_file, map_column, merge_file, save_file,
-                 predicted_dataset='predicted', target_dataset='y',
-                 input_dataset='x'):
+                 predicted_dataset='01/predicted', target_dataset='01/y',
+                 input_dataset='01/x'):
         self.ref_file = ref_file
         self.map_file = map_file
         self.map_column = map_column
