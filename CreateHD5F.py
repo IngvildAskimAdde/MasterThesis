@@ -158,7 +158,7 @@ def get_patient_id_Oxy(patient: Path)-> int:
     """
     Return the patient ID from the path of this patient's data folder.
     """
-    return int(patient.name.split('_')[1])
+    return (1000 + int(patient.name.split('_')[1]))
 
 def get_patient_id_from_dict(dictionary):
 
@@ -220,7 +220,10 @@ def patient_iter_Oxy(data_folder:str, id_list:List[int])->Generator[Path,None,No
     Iterate over the patient folders corresponding to the input id list.
     """
     data_folder = Path(data_folder)
+    id_list = list(id_list)
+    count = 0
     for id_ in id_list:
+        id_list[count] = 'O_' + str(id_)
         yield data_folder / f"Oxytarget_{id_}_PRE"
 
 def patient_iter_LARC(data_folder:str, id_list:List[int])->Generator[Path,None,None]:
@@ -228,8 +231,11 @@ def patient_iter_LARC(data_folder:str, id_list:List[int])->Generator[Path,None,N
     Iterate over the patient folders corresponding to the input id list.
     """
     data_folder = Path(data_folder)
+    id_list = list(id_list)
+    count = 0
     for id_ in id_list:
-
+        id_list[count] = 'L_' + str(id_)
+        count += 1
         if len(str(id_)) == 1:
             yield data_folder / f"LARC-RRP-00{id_}"
 
@@ -430,18 +436,18 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             generate_fold_group(sub_group, fold)
 
 
-#splits_Oxy = read_dictionary('/Textfiles/Oxy_kfold_patients_dict.txt')
-#splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
+splits_Oxy = read_dictionary('./Textfiles/Oxy_kfold_patients_dict.txt')
+splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-#splits_LARC = read_dictionary('/Textfiles/LARC_kfold_patients_dict.txt')
-#splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
+splits_LARC = read_dictionary('./Textfiles/LARC_kfold_patients_dict.txt')
+splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
 data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
-#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
+#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC,destination_path=Path(r'/Volumes/HARDDISK/MasterThesis'), out_name='traditionalSplit_LARC_Oxy.h5',data_path1=data_path_Oxy, data_path2=data_path_LARC,k_fold=False,overwrite=True)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='KFoldSplit_5splits_LARC.h5', data_path=data_path_LARC, k_fold=True, overwrite=True)
@@ -481,15 +487,15 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_LARC.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_LARC_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/KFoldSplit_5splits_Oxy.h5', k_fold=True)
-print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/KFoldSplit_5splits_LARC.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_6/prediction.017.h5', k_fold=False)
 
 #visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
 
