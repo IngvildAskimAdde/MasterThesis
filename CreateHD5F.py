@@ -436,11 +436,11 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             generate_fold_group(sub_group, fold)
 
 
-splits_Oxy = read_dictionary('./Textfiles/Oxy_kfold_patients_dict.txt')
-splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
+#splits_Oxy = read_dictionary('./Textfiles/Oxy_kfold_patients_dict.txt')
+#splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_LARC = read_dictionary('./Textfiles/LARC_kfold_patients_dict.txt')
-splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
+#splits_LARC = read_dictionary('./Textfiles/LARC_kfold_patients_dict.txt')
+#splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
 data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
 data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
@@ -493,9 +493,9 @@ def visulize_images(path_to_file, start_slice, end_slice):
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
-print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_6/prediction.017.h5', k_fold=False)
+print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_7/prediction.043.h5', k_fold=True)
 
 #visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
 

@@ -5,7 +5,7 @@ import numpy as np
 import  matplotlib
 
 LARC_ID_6 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_6/logs.csv')
-#data_valfold2 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_2/logs.csv')
+Oxy_ID_8 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_8/logs.csv')
 #data_valfold3 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_3/logs.csv')
 #data_valfold4 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_4/logs.csv')
 #data_valfold5 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_5/logs.csv')
@@ -78,7 +78,7 @@ def find_best_epoch(dataframe):
 #plot_data(dataframe, 'Dice')
 #median, std = calculate_median(dataframe)
 
-max_dice, epoch = find_best_epoch(LARC_ID_6)
+max_dice, epoch = find_best_epoch(Oxy_ID_8)
 
 
 
