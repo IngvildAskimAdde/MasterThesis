@@ -477,6 +477,7 @@ def print_detail(filename, k_fold=False):
                             print('----> Patient ids:', np.unique(f[group][sub_group][ds_name]))
                             print('----> Patient ids:', len(np.unique(f[group][sub_group][ds_name])))
 
+
 def visulize_images(path_to_file, start_slice, end_slice):
 
     with h5py.File(path_to_file, 'r') as f:
@@ -487,7 +488,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/traditionalSplit_Oxy.h5', k_fold=True)
+print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
 
@@ -495,7 +496,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_7/prediction.043.h5', k_fold=True)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_7/prediction.043.h5', k_fold=True)
 
 #visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
 

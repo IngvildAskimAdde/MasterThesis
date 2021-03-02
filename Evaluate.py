@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import  matplotlib
 
-LARC_ID_6 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_6/logs.csv')
-Oxy_ID_8 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_8/logs.csv')
-#data_valfold3 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_3/logs.csv')
+LARC_ID_11 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_11/logs.csv')
+#Oxy_ID_11 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_11/logs.csv')
+#Oxy_ID_11_patients = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_11/slice.csv')
 #data_valfold4 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_4/logs.csv')
 #data_valfold5 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/kfold/ID_5/logs.csv')
 
@@ -71,14 +71,24 @@ def find_best_epoch(dataframe):
     best_epoch = max_dice_index+1
     #min_loss = dataframe['val_loss'].min()
     #min_loss_index = dataframe[dataframe['val_loss'] == dataframe['val_loss'].min()].index.values
-
+    print('Best Dice:', max_dice)
     return max_dice, best_epoch
+
+def get_data(dataframe, column):
+    print(dataframe.describe())
+    print('Mean:', dataframe[column].mean())
+    print('Std:', dataframe[column].std())
+    return dataframe[column].mean()
+
+
 
 #dataframe = create_dataframe(dataframes, 'val_dice', 93)
 #plot_data(dataframe, 'Dice')
 #median, std = calculate_median(dataframe)
 
-max_dice, epoch = find_best_epoch(Oxy_ID_8)
+max_dice, epoch = find_best_epoch(LARC_ID_11)
+#max_dice, epoch = find_best_epoch(Oxy_ID_11)
+#mean = get_data(Oxy_ID_11_patients, 'f1_score')
 
 
 
