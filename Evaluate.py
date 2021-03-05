@@ -6,7 +6,7 @@ import  matplotlib
 
 #LARC_ID_12 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_12/logs.csv')
 #Oxy_ID_11 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_11/logs.csv')
-Combined_ID_2 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_2/logs.csv')
+Combined_ID_6 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_6/logs.csv')
 
 #Oxy_ID_11_patients = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_11/slice.csv')
 #slice_352 = pd.read_csv('/Volumes/HARDDISK/MasterThesis/Experiments/LARC/traditional_split/LARC_ID_11/slice_352.csv')
@@ -89,7 +89,7 @@ def get_data(dataframe, column):
 #plot_data(dataframe, 'Dice')
 #median, std = calculate_median(dataframe)
 
-max_dice, epoch = find_best_epoch(Combined_ID_2)
+max_dice, epoch = find_best_epoch(Combined_ID_6)
 #max_dice, epoch = find_best_epoch(Oxy_ID_11)
 #mean = get_data(LARC_ID_11_slice, 'f1_score')
 
