@@ -496,7 +496,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Oxy/traditional_split/Oxy_ID_7/model.043.h5', k_fold=False)
+print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_1/prediction.043.h5', k_fold=False)
 
 #visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
 
