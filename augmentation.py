@@ -12,9 +12,9 @@ def get_images_and_targets(filepath, indice):
     Returns normalized images and targets from the given indices from the hdf5 file.
     """
     with h5py.File(filepath, 'r') as f:
-        images = f['val/352']['input'][indice]
-        targets = f['val/352']['target_an'][indice]
-        images, targets = ImageNormalizerPreprocessor().transform(images, targets)
+        images = f['train/352']['input'][indice]
+        targets = f['train/352']['target_an'][indice]
+        images, targets = ImageNormalizerPreprocessor(0,1000).transform(images, targets)
         return images, targets
 
 def plot_single_image(img, contour):
@@ -109,10 +109,22 @@ def blur(img, contour, blur_value, channel):
 
 
 
-path = '/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5'
-indice = [10]#, 10, 14, 16]
+path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
+indice = [603]#, 10, 14, 16]
 images, targets = get_images_and_targets(path, indice)
 plot_single_image(images, targets)
 #flip(images, targets, axis=0)
 #rotate(images, targets, degrees=90)
-blur(images, targets, blur_value=0.5, channel=None)
+#blur(images, targets, blur_value=0.5, channel=None)
+
+
+file = h5py.File(path,'r')
+data = file['train/352/input'][603]
+patient = file['train/352/patient_ids'][603]
+
+#data = file['train/256/input'][35]
+#patient = file['train/256/patient_ids'][35]
+print(data)
+print(data.shape)
+print(data.max())
+print(patient)

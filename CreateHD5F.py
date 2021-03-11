@@ -442,8 +442,8 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
 #splits_LARC = read_dictionary('./Textfiles/LARC_kfold_patients_dict.txt')
 #splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
-data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
+#data_path_Oxy = Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped')
+#data_path_LARC = Path(r'/Volumes/HARDDISK/MasterThesis/LARC_cropped')
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='traditionalSplit_Oxy.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC.h5', data_path=data_path_LARC, k_fold=False, overwrite=True)
@@ -489,14 +489,14 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.show()
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
-#print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/traditionalSplit_LARC.h5', k_fold=True)
+print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_1/prediction.043.h5', k_fold=False)
+#print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_1/prediction.043.h5', k_fold=False)
 
 #visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
 
