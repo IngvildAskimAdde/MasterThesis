@@ -4,18 +4,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import  matplotlib
 
-#LARC_ID_10 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/logs.csv')
-#Oxy_ID_6 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_6/logs.csv')
-Combined_ID_8 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined/Combined_ID_8/logs.csv')
+#LARC_ID_17 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_17/logs.csv')
+#Oxy_ID_14 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_14/logs.csv')
+Combined_ID_9 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined/Combined_ID_9/logs.csv')
 
-Oxy_ID_11_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_11/patient.csv')
-slice_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/slice_352.csv')
-slice_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/slice_256.csv')
-LARC_ID_10_slice = slice_352.append(slice_256)
+#Oxy_ID_11_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_11/patient.csv')
+#slice_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/slice_352.csv')
+#slice_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/slice_256.csv')
+#LARC_ID_10_slice = slice_352.append(slice_256)
 
-patient_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/patient_352.csv')
-patient_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/patient_256.csv')
-LARC_ID_10_patient = patient_352.append(patient_256)
+#patient_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/patient_352.csv')
+#patient_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_10/patient_256.csv')
+#LARC_ID_10_patient = patient_352.append(patient_256)
 
 #dataframes = [data_valfold1, data_valfold2, data_valfold3, data_valfold4, data_valfold5]
 
@@ -93,7 +93,7 @@ def get_data(dataframe, column):
 #plot_data(dataframe, 'Dice')
 #median, std = calculate_median(dataframe)
 
-max_dice, epoch = find_best_epoch(Combined_ID_8)
+max_dice, epoch = find_best_epoch(Combined_ID_9)
 #max_dice, epoch = find_best_epoch(LARC_ID_10)
 #mean, median = get_data(Combined_ID_6_patient, 'f1_score')
 #mean = get_data(LARC_ID_10_slice, 'f1_score')

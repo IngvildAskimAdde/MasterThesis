@@ -1,5 +1,5 @@
 import h5py
-from deoxys.data.preprocessor import ImageNormalizerPreprocessor
+from deoxys.data.preprocessor import ImageNormalizerPreprocessor, HounsfieldWindowingPreprocessor
 import matplotlib.pyplot as plt
 from medvis import apply_cmap_with_blend
 from deoxys_image import affine_transform
@@ -15,6 +15,7 @@ def get_images_and_targets(filepath, indice):
         images = f['train/352']['input'][indice]
         targets = f['train/352']['target_an'][indice]
         images, targets = ImageNormalizerPreprocessor(0,1000).transform(images, targets)
+        #images, targets = HounsfieldWindowingPreprocessor(4500,10000,0).transform(images, targets)
         return images, targets
 
 def plot_single_image(img, contour):
@@ -110,6 +111,7 @@ def blur(img, contour, blur_value, channel):
 
 
 path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
+#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5'
 indice = [603]#, 10, 14, 16]
 images, targets = get_images_and_targets(path, indice)
 plot_single_image(images, targets)
@@ -126,5 +128,6 @@ patient = file['train/352/patient_ids'][603]
 #patient = file['train/256/patient_ids'][35]
 print(data)
 print(data.shape)
+print(data[0][...,0].shape)
 print(data.max())
 print(patient)
