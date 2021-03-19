@@ -6,8 +6,8 @@ from matplotlib.ticker import MaxNLocator, FixedLocator, FixedFormatter
 from sklearn.model_selection import StratifiedShuffleSplit, StratifiedKFold, KFold
 import random
 
-data_Oxy = pd.read_excel("/Volumes/HARDDISK/MasterThesis/Excel_data/200618_Inklusjonsdata_COPY_ny.xlsx", index_col=0)
-data_LARC = pd.read_excel("/Volumes/HARDDISK/MasterThesis/Excel_data/150701 Kliniske data endelig versjon ny.xlsx", index_col=0)
+data_Oxy = pd.read_excel("/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/200618_Inklusjonsdata_COPY_ny.xlsx", index_col=0)
+data_LARC = pd.read_excel("/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/150701 Kliniske data endelig versjon ny.xlsx", index_col=0)
 
 def categorize(data):
 
@@ -174,11 +174,11 @@ def create_traditionalSplit_dict(train, val, test, smaller_dimensions=None):
     set_large_dimensions = set()
 
     for patient in train:
-
         if patient in smaller_dimensions:
             set_small_dimensions.add(patient)
         else:
             set_large_dimensions.add(patient)
+
 
     if (len(set_small_dimensions)==0):
         patient_dict['train']['352'] = [set_large_dimensions]
@@ -334,6 +334,15 @@ def combine_datasets_kfold(patient_folds1, category_folds1, patient_folds2, cate
 
     return patient_folds2, category_folds2
 
+def remove_256(dictionary):
+
+    del dictionary['train']['256']
+    del dictionary['val']['256']
+    del dictionary['test']['256']
+
+    return dictionary
+
+
 #patient_folds_LARC_Oxy, cat_folds_LARC_Oxy = combine_datasets_kfold(patient_folds_Oxy, cat_folds_Oxy, patient_folds_LARC, cat_folds_LARC)
 #trainVal_category_LARC_Oxy = np.append(trainVal_category_Oxy, trainVal_category_LARC)
 
@@ -358,7 +367,7 @@ print(np.sort(train))
 print(np.sort(val))
 print(np.sort(test))
 
-"""
+
 ####### PLOT AND PRINT K-FOLDS ##################################
 plot_distribution(trainVal_category_Oxy, r'Total dataset')
 plot_distribution(cat_folds_Oxy[0], r'Total dataset')
@@ -371,7 +380,7 @@ plot_distribution(cat_folds_Oxy[4], r'Total dataset')
 #plot_distribution(kfold_cat_Oxy['Validation3'], r'Total dataset')
 #plot_distribution(kfold_cat_Oxy['Train4'], r'Total dataset')
 #plot_distribution(kfold_cat_Oxy['Validation4'], r'Total dataset')
-"""
+
 print('Fold1:')
 print('Train:', np.sort(kfold_patients_Oxy['Fold1']['Train1']))
 print('Validation:', np.sort(kfold_patients_Oxy['Fold1']['Validation1']))
@@ -387,7 +396,6 @@ print('Validation:', np.sort(kfold_patients_Oxy['Fold4']['Validation4']))
 print('Fold5:')
 print('Train:', np.sort(kfold_patients_Oxy['Fold5']['Train5']))
 print('Validation:', np.sort(kfold_patients_Oxy['Fold5']['Validation5']))
-
 """
 
 #kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
@@ -397,20 +405,25 @@ print('Validation:', np.sort(kfold_patients_Oxy['Fold5']['Validation5']))
 #tradSplit_patients_Oxy = create_traditionalSplit_dict(trainOxy, valOxy, testOxy, smaller_dimensions=small_dimensions_patients_Oxy)
 
 small_dimensions_patients = ['LARC-RRP-011','LARC-RRP-013','LARC-RRP-014','LARC-RRP-015','LARC-RRP-016','LARC-RRP-019']
+#trainLARC, valLARC, testLARC = remove_256(trainLARC, valLARC, testLARC, small_dimensions_patients)
 #tradSplit_patients_LARC = create_traditionalSplit_dict(trainLARC, valLARC, testLARC, smaller_dimensions=small_dimensions_patients)
+#tradSplit_patients_LARC_352 = remove_256(tradSplit_patients_LARC)
 
-#tradSplit_patients_LARC_Oxy = create_traditionalSplit_dict(train, val, test, smaller_dimensions=small_dimensions_patients)
+tradSplit_patients_LARC_Oxy = create_traditionalSplit_dict(train, val, test, smaller_dimensions=small_dimensions_patients)
+tradSplit_patients_LARC_Oxy_352 = remove_256(tradSplit_patients_LARC_Oxy)
 
-kfold_patients_Oxy = create_kfold_5split_dict(patient_folds_Oxy,smaller_dimensions=small_dimensions_patients)
+
+#kfold_patients_Oxy = create_kfold_5split_dict(patient_folds_Oxy,smaller_dimensions=small_dimensions_patients)
 #kfold_patients_LARC = create_kfold_5split_dict(patient_folds_LARC,smaller_dimensions=small_dimensions_patients)
 #kfold_patients_LARC_Oxy = create_kfold_5split_dict(patient_folds_LARC_Oxy,smaller_dimensions=small_dimensions_patients)
 
 
-"""
-f = open("LARC_Oxy_tradSplit_patients_dict.txt","w")
-f.write(str(tradSplit_patients_LARC_Oxy))
+
+f = open("Textfiles/LARC_Oxy_tradSplit_patients_dict_352.txt", "w")
+f.write(str(tradSplit_patients_LARC_Oxy_352))
 f.close()
 
+"""
 f = open("LARC_Oxy_tradSplit_category.txt","w")
 f.write('Total set:')
 f.write(str(category))
@@ -425,7 +438,7 @@ f.write('Test split:')
 f.write(str(test_catOxy))
 f.close()
 
-"""
+
 
 f = open("Textfiles/Oxy_kfold_patients_dict.txt", "w")
 f.write(str(kfold_patients_Oxy))
@@ -450,3 +463,4 @@ f.write('\n')
 f.write('fold_5:')
 f.write(str(cat_folds_Oxy[4]))
 f.close()
+"""
