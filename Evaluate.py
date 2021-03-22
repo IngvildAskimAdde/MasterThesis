@@ -5,8 +5,8 @@ import numpy as np
 import  matplotlib
 
 #LARC_ID_20 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_20/logs.csv')
-#Oxy_ID_14 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_14/logs.csv')
-Combined_ID_12 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined/Combined_ID_12/logs.csv')
+Oxy_ID_6_new = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_6_new/logs.csv')
+#Combined_ID_12 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined/Combined_ID_12/logs.csv')
 
 #Oxy_ID_11_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy/Oxy_ID_11/patient.csv')
 #LARC_ID_20_slice = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_20/slice.csv')
@@ -95,7 +95,7 @@ def get_data(dataframe, column):
 #median, std = calculate_median(dataframe)
 
 #max_dice, epoch = find_best_epoch(Combined_ID_9)
-max_dice, epoch = find_best_epoch(Combined_ID_12)
+max_dice, epoch = find_best_epoch(Oxy_ID_6_new)
 #mean, median = get_data(LARC_ID_7_patient, 'f1_score')
 #mean = get_data(LARC_ID_10_slice, 'f1_score')
 

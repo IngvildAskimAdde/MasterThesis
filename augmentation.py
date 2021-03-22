@@ -110,9 +110,10 @@ def blur(img, contour, blur_value, channel):
 
 
 
-path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
+#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
 #path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5'
-indice = [603]#, 10, 14, 16]
+path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5'
+indice = [10] #[603]#, 10, 14, 16]
 images, targets = get_images_and_targets(path, indice)
 plot_single_image(images, targets)
 #flip(images, targets, axis=0)
@@ -121,13 +122,24 @@ plot_single_image(images, targets)
 
 
 file = h5py.File(path,'r')
-data = file['train/352/input'][603]
-patient = file['train/352/patient_ids'][603]
-
-#data = file['train/256/input'][35]
-#patient = file['train/256/patient_ids'][35]
-print(data)
-print(data.shape)
-print(data[0][...,0].shape)
+"""
+length = file['val']['352']['input'].shape[0]
+print(length)
+for i in range(length):
+    data = file['val/352/input'][i]
+    mask = file['val/352/target_an'][i]
+    patient = file['val/352/patient_ids'][i]
+    mask_max = mask.max()
+    print(mask_max)
+    if mask_max != 1.0 and mask_max != 0.0:
+        print('ALERT')
+"""
+data = file['train/352/input'][10]
+mask = file['val/352/target_an'][10]
+patient = file['train/352/patient_ids'][10]
+#print(data)
+#print(data.shape)
+#print(data[0][...,0].shape)
 print(data.max())
+print(mask.max())
 print(patient)

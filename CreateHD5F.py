@@ -442,10 +442,10 @@ splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_new')
 data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm'), out_name='traditionalSplit_Oxy_ZScoreNorm.h5', data_path=data_path_Oxy, k_fold=False, overwrite=False)
+generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_new'), out_name='traditionalSplit_Oxy_new.h5', data_path=data_path_Oxy, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_ZScoreNorm.h5', data_path=data_path_LARC, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/'), out_name='traditionalSplit_LARC_Oxy_ZScoreNorm.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
 
@@ -483,14 +483,15 @@ def visulize_images(path_to_file, start_slice, end_slice):
     with h5py.File(path_to_file, 'r') as f:
         images = f['train/352']['input'][start_slice:end_slice]
         masks = f['train/352']['target_an'][start_slice:end_slice]
+        print(f['train/352']['patient_ids'][start_slice:end_slice])
 
     plt.imshow(images[0][..., 0], 'gray')
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/traditionalSplit_LARC_ZScoreNorm.h5', k_fold=True)
-print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
@@ -499,5 +500,5 @@ print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LAR
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Experiments/Combined/traditional_split/Combined_ID_1/prediction.043.h5', k_fold=False)
 
-#visulize_images('/Volumes/HARDDISK/MasterThesis/HDF5_data/traditionalSplit_Oxy.h5',66 ,100)
+#visulize_images('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5',66 ,100)
 
