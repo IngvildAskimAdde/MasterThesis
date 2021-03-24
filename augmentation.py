@@ -110,12 +110,12 @@ def blur(img, contour, blur_value, channel):
 
 
 
-#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
+path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
 #path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5'
-path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5'
-indice = [10] #[603]#, 10, 14, 16]
-images, targets = get_images_and_targets(path, indice)
-plot_single_image(images, targets)
+#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5'
+indice = [603]#, 10, 14, 16]
+#images, targets = get_images_and_targets(path, indice)
+#plot_single_image(images, targets)
 #flip(images, targets, axis=0)
 #rotate(images, targets, degrees=90)
 #blur(images, targets, blur_value=0.5, channel=None)
@@ -134,9 +134,9 @@ for i in range(length):
     if mask_max != 1.0 and mask_max != 0.0:
         print('ALERT')
 """
-data = file['train/352/input'][10]
-mask = file['val/352/target_an'][10]
-patient = file['train/352/patient_ids'][10]
+data = file['train/352/input'][603]
+mask = file['val/352/target_an'][603]
+patient = file['train/352/patient_ids'][603]
 #print(data)
 #print(data.shape)
 #print(data[0][...,0].shape)
