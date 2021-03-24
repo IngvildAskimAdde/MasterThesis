@@ -1,22 +1,33 @@
 
-import os
+
 import pandas as pd
 import SimpleITK as sitk
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import ImageViewer as iv
 import get_data as gd
 
 
-def dataframe(patientPaths, patientNames, imagePaths, maskPaths):
 
+def dataframe(patientPaths, patientNames, imagePaths, maskPaths):
+    """
+    Creates a dataframe containing paths to patient folder, to image, to mask and name of patient
+
+    :param patientPaths: list of paths to patient folders
+    :param patientNames: list of patient names
+    :param imagePaths: list of paths to image-files
+    :param maskPaths: list of paths to mask-files
+    :return: dataframe with information
+    """
     df = pd.DataFrame(list(zip(patientPaths, patientNames, imagePaths, maskPaths)),columns=['patientPaths', 'ID', 'imagePaths', 'maskPaths'])
     return df
 
 
 def dimensions(dataset_dataframe):
+    """
+    Adds information about image dimensions to dataframe
 
+    :param dataset_dataframe: dataframe with information
+    :return: dataframe with dimension information added
+    """
     dataset_dataframe['xDimension'] = ''
     dataset_dataframe['yDimension'] = ''
     dataset_dataframe['zDimension'] = ''
@@ -42,28 +53,17 @@ def dimensions(dataset_dataframe):
 
     return dataset_dataframe
 
-
-def get_array(path):
-
+def create_dataframe(folder_path, image_prefix, mask_suffix):
     """
-    Input: Path to image files
-    Output: sitk array of image file, and image size
-    """
+    Returns a dataframe with information of the images in the folder_path
 
-    img = sitk.ReadImage(path)
-    array = sitk.GetArrayFromImage(img)
-    imsize = np.shape(array)
-    #array = array.flatten()
-    return array, imsize
-
-
-def create_image_from_array(array, imsize):
+    folder_path: path to folder with images
+    image_prefix: prefix of image files
+    mask_suffix: suffix of mask files
     """
-    Input: Image as array, and image size
-    Output: Image object
-    """
-    im = np.reshape(array,imsize)
-    im = im.astype(int)
-    im = sitk.GetImageFromArray(im)
-    return im
+    patientPaths, patientNames, imagePaths, maskPaths = gd.get_paths(folder_path, image_prefix, mask_suffix)
+    df = dataframe(patientPaths, patientNames, imagePaths, maskPaths)
+    df = dimensions(df)
+    return df
+
 
