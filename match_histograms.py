@@ -1,49 +1,49 @@
 
 from skimage.exposure import match_histograms
 import SimpleITK as sitk
-import matplotlib.pyplot as plt
-import h5py
+import useful_functions as uf
+import Preprocessing as p
+import os
 
-im1_Oxy = sitk.ReadImage('/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped/Oxytarget_90_PRE/T2.nii')
-im1_LARC = sitk.ReadImage('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-035/image.nii')
 
-im1_Oxy_array = sitk.GetArrayFromImage(im1_Oxy)
-im1_LARC_array = sitk.GetArrayFromImage(im1_LARC)
+def match_all_histograms(source_folder, destination_folder, image_filename, mask_filename, reference_image_path):
 
-matched_LARC = match_histograms(im1_LARC_array, im1_Oxy_array, multichannel=False)
+    df = p.create_dataframe(source_folder, image_filename, mask_filename)
+    dst_paths = uf.create_dst_paths(destination_folder)
 
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(8, 3),
-                                    sharex=True, sharey=True)
+    reference_image = sitk.ReadImage(reference_image_path)
+    reference_image_array = sitk.GetArrayFromImage(reference_image)
 
-for aa in (ax1, ax2, ax3):
-    aa.set_axis_off()
-"""
-ax1.imshow(im1_LARC_array[20], cmap='gray')
-ax1.set_title('Source')
-ax2.imshow(im1_Oxy_array[20], cmap='gray')
-ax2.set_title('Reference')
-ax3.imshow(matched_LARC[20], cmap='gray')
-ax3.set_title('Matched')
-"""
-ax1.hist(im1_LARC_array[20].flatten())
-ax1.set_title('Source')
-ax2.hist(im1_Oxy_array[20].flatten())
-ax2.set_title('Reference')
-ax3.hist(matched_LARC[20].flatten())
-ax3.set_title('Matched')
+    for i in range(len(df['imagePaths'])):
+        print('Matching:', df['imagePaths'][i])
 
-plt.tight_layout()
-plt.show()
+        image = sitk.ReadImage(df['imagePaths'][i])
+        image_array = sitk.GetArrayFromImage(image)
 
-#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
-#file = h5py.File(path,'r')
-#data = file['train']['352']['input'][603]
-#mask = file['val/352/target_an'][603]
-#patient = file['train']['352']['patient_ids'][603]
-#print(data)
-#print(data.shape)
-#print(data[0][...,0].shape)
-#print(data.max())
-#print(mask.max())
-#print(patient)
+        matched_array = match_histograms(image_array, reference_image_array, multichannel=False)
 
+        matched_image = sitk.GetImageFromArray(matched_array)
+        mask = sitk.ReadImage(df['maskPaths'][i])
+
+        sitk.WriteImage(matched_image, os.path.join(dst_paths[i], image_filename))
+        sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
+
+
+#match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped',
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_MatchedHist',
+#                     'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii',
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-003/image.nii')
+
+#uf.show_image_interactive('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_MatchedHist/LARC-RRP-035/image.nii',
+#                          '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_MatchedHist/LARC-RRP-035/1 RTSTRUCT LARC_MRS1-label.nii',
+#                          '1')
+
+
+#uf.show_image('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-003/image.nii',
+#              '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-003/1 RTSTRUCT LARC_MRS1-label.nii',
+#              8)
+
+uf.plot_matched_histograms('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-035/image.nii',
+                       '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-003/image.nii',
+                       '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_MatchedHist/LARC-RRP-035/image.nii',
+                       20, 8)
