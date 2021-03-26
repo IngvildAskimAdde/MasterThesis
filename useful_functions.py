@@ -4,6 +4,13 @@ import ImageViewer as iv
 import SimpleITK as sitk
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib
+from matplotlib.lines import Line2D
+
+matplotlib.rcParams.update({'font.size': 25})
+matplotlib.rcParams['font.family'] = "serif"
+matplotlib.rcParams.update({'xtick.labelsize': 20})
 
 ###### Folders and path functions ###########################
 def create_folder(src_main_folder, dst_main_folder, patient_identifier):
@@ -76,6 +83,20 @@ def show_image_interactive(image_path, mask_path, view_mode):
     v.set_mask(mask, label='mask')
     v.show()
 
+def show_image(image_path, mask_path, slice_number):
+
+    image = sitk.ReadImage(image_path)
+    image_array = sitk.GetArrayFromImage(image)
+    mask = sitk.ReadImage(mask_path)
+    mask_array = sitk.GetArrayFromImage(mask)
+
+    plt.figure(figsize=(11,8))
+    plt.imshow(image_array[slice_number], cmap='gray')
+    #plt.plot(mask_array[slice_number])
+    plt.axis('off')
+    plt.show()
+
+
 def plot_2x2(image1_path, image2_path, image3_path, image4_path, slice_number):
 
     image1 = sitk.ReadImage(image1_path)
@@ -106,9 +127,62 @@ def plot_2x2(image1_path, image2_path, image3_path, image4_path, slice_number):
     plt.show()
 
 
-im1_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped/Oxytarget_90_PRE/T2.nii'
-im1_LARC = '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-035/image.nii'
-im2_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm/Oxytarget_90_PRE/T2.nii'
-im2_LARC = '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/LARC-RRP-035/image.nii'
+#im1_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped/Oxytarget_90_PRE/T2.nii'
+#im1_LARC = '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-035/image.nii'
+#im2_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm/Oxytarget_90_PRE/T2.nii'
+#im2_LARC = '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/LARC-RRP-035/image.nii'
 
-plot_2x2(im1_Oxy, im1_LARC, im2_Oxy, im2_LARC, 20)
+#plot_2x2(im1_Oxy, im1_LARC, im2_Oxy, im2_LARC, 20)
+
+def plot_pixel_distribution(df):
+    """
+    Plots the pixel distribution of the images with paths given by a dataframe
+
+    :param df: dataframe with image paths
+    :return: a plot of the distribution of pixel intensities in the images given by the dataframe
+    """
+    plt.figure(figsize=(14, 11))
+
+    for i in range(len(df['imagePaths'])):
+        print('Plotting:', df['imagePaths'][i])
+        array, image_size = get_array_from_image(df['imagePaths'][i])
+
+        if df['ID'][i].endswith('PRE'):
+            sns.kdeplot(data=array.flatten(), color='#9ecae1')
+        else:
+            sns.kdeplot(data=array.flatten(), color='#fdae6b')
+
+    legend_labels = [Line2D([0], [0], color='#9ecae1', label='OxyTarget'),
+                     Line2D([0], [0], color='#fdae6b', label='LARC-RRP')]
+
+    plt.xlabel('Pixel intensity')
+    plt.legend(handles=legend_labels)
+    plt.show()
+
+    #plt.savefig('savfig.pdf')
+
+def plot_matched_images(source_image_path, reference_image_path, matched_image_path, slice_number, slice_number_ref):
+
+    source_image = sitk.ReadImage(source_image_path)
+    source_image_array = sitk.GetArrayFromImage(source_image)
+    ref_image = sitk.ReadImage(reference_image_path)
+    ref_image_array = sitk.GetArrayFromImage(source_image)
+    matched_image = sitk.ReadImage(matched_image_path)
+    matched_image_array = sitk.GetArrayFromImage(matched_image)
+
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, figsize=(14, 5),
+                                        sharex=True, sharey=True)
+
+    for aa in (ax1, ax2, ax3):
+        aa.set_axis_off()
+
+    ax1.imshow(source_image_array[slice_number], cmap='gray')
+    #ax1.set_title('Input Image')
+    ax2.imshow(ref_image_array[slice_number_ref], cmap='gray')
+    #ax2.set_title('Reference Image')
+    ax3.imshow(matched_image_array[slice_number], cmap='gray')
+    #ax3.set_title('Matched Image')
+
+    plt.tight_layout()
+    plt.show()
+
