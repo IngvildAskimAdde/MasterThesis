@@ -7,6 +7,7 @@ import useful_functions as uf
 import os
 import matplotlib.pyplot as plt
 
+
 def zscore_norm(data):
     """
     Takes in an image as a flatten array, and normalize the data using z-score normalization
@@ -66,5 +67,11 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped', '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_corrected', '/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm', 'T2.nii', 'Manual_an.nii')
 
+#df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+#df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_ZScoreNorm', 'T2.nii', 'Manual_an.nii')
+#df_small_LARC = df_LARC[:5]
+#df_small_Oxy = df_Oxy[:5]
+#df_small = df_small_Oxy.append(df_small_LARC)
+#df_small = df_small.reset_index()
 
-
+#uf.plot_pixel_distribution(df_small)
