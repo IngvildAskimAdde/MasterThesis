@@ -442,12 +442,12 @@ splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_corrected')
-data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHist')
+data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_corrected'), out_name='traditionalSplit_Oxy_corrected.h5', data_path=data_path_Oxy, k_fold=False, overwrite=True)
-#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_ZScoreNorm.h5', data_path=data_path_LARC, k_fold=False, overwrite=False)
-generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_LARC_Oxy_corrected.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=True)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHist'), out_name='traditionalSplit_Oxy_MatchedHist.h5', data_path=data_path_Oxy, k_fold=False, overwrite=False)
+#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_MatchedHist.h5', data_path=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_MatchedHist.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='KFoldSplit_5splits_LARC.h5', data_path=data_path_LARC, k_fold=True, overwrite=True)
