@@ -91,7 +91,7 @@ def show_image(image_path, mask_path, slice_number):
     mask_array = sitk.GetArrayFromImage(mask)
 
     plt.figure(figsize=(11,8))
-    plt.imshow(image_array[slice_number], cmap='gray')
+    plt.imshow(image_array[slice_number], cmap='gray')#, vmin=-2, vmax=4)
     #plt.plot(mask_array[slice_number])
     plt.axis('off')
     plt.show()
@@ -166,7 +166,7 @@ def plot_matched_images(source_image_path, reference_image_path, matched_image_p
     source_image = sitk.ReadImage(source_image_path)
     source_image_array = sitk.GetArrayFromImage(source_image)
     ref_image = sitk.ReadImage(reference_image_path)
-    ref_image_array = sitk.GetArrayFromImage(source_image)
+    ref_image_array = sitk.GetArrayFromImage(ref_image)
     matched_image = sitk.ReadImage(matched_image_path)
     matched_image_array = sitk.GetArrayFromImage(matched_image)
 

@@ -6,10 +6,10 @@ import customize_obj
 
 
 if __name__ == '__main__':
-    output_folder = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_1_new/' # change this to the folder you want to store the result
-    dataset_file = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_corrected.h5' # path to the dataset
+    output_folder = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_22/' # change this to the folder you want to store the result
+    dataset_file = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_ZScoreNorm.h5' # path to the dataset
 
-    predicted_h5 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_1_new/prediction.019.h5' # the prediction file you want to calculate the dice
+    predicted_h5 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_22/prediction.056.h5' # the prediction file you want to calculate the dice
 
     dice_per_slice = output_folder + 'slice_256.csv'
     dice_per_patient = output_folder + 'patient_256.csv'
