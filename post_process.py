@@ -6,14 +6,14 @@ import customize_obj
 
 
 if __name__ == '__main__':
-    output_folder = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_18_new/' # change this to the folder you want to store the result
-    dataset_file = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Combined_MatchedHistZScore.h5' # path to the dataset
+    output_folder = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_21_new/' # change this to the folder you want to store the result
+    dataset_file = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore.h5' # path to the dataset
 
-    predicted_h5 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_18_new/prediction.110.h5' # the prediction file you want to calculate the dice
+    predicted_h5 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_21_new/prediction.061.h5' # the prediction file you want to calculate the dice
 
-    dice_per_slice = output_folder + 'slice_352.csv'
-    dice_per_patient = output_folder + 'patient_352.csv'
-    merge_file = output_folder + 'merge_images_352.h5'
+    dice_per_slice = output_folder + 'slice.csv'
+    dice_per_patient = output_folder + 'patient.csv'
+    merge_file = output_folder + 'merge_images.h5'
 
     customize_obj.H5MetaDataMapping(
         dataset_file,
