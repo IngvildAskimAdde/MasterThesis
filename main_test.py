@@ -112,41 +112,51 @@ def main_aug():
     colors_LARC = ['#fdae6b']  # ['#fee6ce','#fdae6b','#e6550d']
     colors_Comb = ['#a1d99b']  # ['#e5f5e0','#a1d99b','#31a354']
 
-    uf.violinplot(dictionary['Combined'], 20, 20, '', colors_Comb)
+    uf.violinplot(dictionary['LARC-RRP'], 20, 20, '', colors_LARC)
     # catplot_aug(dictionary['LARC-RRP'], 20, 20, '', col_names, colors_LARC, save=False)
 
 main_aug()
 
-def main_kfold():
+def main_kfold(sheet_name, LARC=False):
 
-    sheet_name = 'LARC'
     excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
     dataframe = pd.read_excel(excel_path, sheet_name=sheet_name)
     paths = list(dataframe['Result path'])
 
     # Define correct experiments (IDs)
-    ids_LARC = [2, 1, 0, 3, 4]
-    ids_Oxy = [4, 1, 2, 3, 0]
+    if LARC:
+        ids = [2, 1, 0, 3, 4]
+        column_names = ['Fold 3', 'Fold 2', 'Fold 1', 'Fold 4', 'Fold 5']
+    else:
+        ids = [4, 1, 2, 3, 0]
+        column_names = ['Fold 5', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 1']
 
-    column_names = ['Fold 3', 'Fold 2', 'Fold 1', 'Fold 4', 'Fold 5']
     df = pd.DataFrame()
 
     for i in range(len(column_names)):
-        df_temp = pd.read_csv(paths[ids_LARC[i]] + '/logs.csv')
+        df_temp = pd.read_csv(paths[ids[i]] + '/logs.csv')
         df[column_names[i]] = df_temp['val_dice']
         print(column_names[i])
         print('Max val_dice score:', max((list(df_temp['val_dice']))))
 
-    df = uf.swap_columns(df, 'Fold 3', 'Fold 1')
-    df['Data'] = 'LARC-RRP'
-    df = pd.melt(df, id_vars=['Data'], var_name=['Parameters'])
+    max_dsc = []
 
-    colors_LARC = ['#fdae6b']
-    colors_Oxy = ['#9ecae1']
+    if LARC:
+        df = uf.swap_columns(df, 'Fold 3', 'Fold 1')
+        for i in list(df.columns):
+            max_dsc.append(max(list(df[i])))
+        df['Data'] = 'LARC-RRP'
+        df = pd.melt(df, id_vars=['Data'], var_name=['Parameters'])
+        colors = ['#fdae6b']
+        uf.boxplot(df, 20, 20, '', colors)
+    else:
+        df = uf.swap_columns(df, 'Fold 5', 'Fold 1')
+        for i in list(df.columns):
+            max_dsc.append(max(list(df[i])))
+        df['Data'] = 'Oxytarget'
+        df = pd.melt(df, id_vars=['Data'], var_name=['Parameters'])
+        colors = ['#9ecae1']
+        uf.boxplot(df, 20, 20, '', colors)
 
-    uf.boxplot(df, 20, 20, '', colors_LARC)
-
-    return df
-
-
+    return max_dsc
 
