@@ -314,3 +314,20 @@ def boxplot(dataframe, fontsize, labelsize, title, colors):
     plt.tight_layout()
     plt.show()
 
+
+def scatter_plot(max_dsc_list, color):
+    """
+    Creates a satter plot of maximum dsc scores.
+
+    :param max_dsc_list: list of maximum dsc scores for different folds
+    :param color: color of scatter dots
+    :return: scatter plot
+    """
+
+    x_values = ['Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5']
+    plt.figure(figsize=(11, 8))
+    plt.scatter(x_values, max_dsc_list, color=color)
+    plt.ylabel('DSC')
+    plt.xticks(rotation=30)
+    plt.ylim(-0.05, 1.05)
+    plt.show()
