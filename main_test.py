@@ -115,7 +115,7 @@ def main_aug():
     uf.violinplot(dictionary['LARC-RRP'], 20, 20, '', colors_LARC)
     # catplot_aug(dictionary['LARC-RRP'], 20, 20, '', col_names, colors_LARC, save=False)
 
-main_aug()
+#main_aug()
 
 def main_kfold(sheet_name, LARC=False):
 
@@ -159,4 +159,52 @@ def main_kfold(sheet_name, LARC=False):
         uf.boxplot(df, 20, 20, '', colors)
 
     return max_dsc
+
+def main_lr():
+    excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
+
+    # Define correct experiments (IDs)
+    ids_LARC = [5, 8]
+    ids_Oxy = [5, 8]
+    ids_Comb = [0, 3]
+
+    # Creating dataframes of det f1 scores of the validation patients
+    Oxy = uf.dataframe_of_f1scores(excel_path, 'Oxy_new', ['patient.csv'], ids_Oxy)
+    LARC = uf.dataframe_of_f1scores(excel_path, 'LARC', ['patient_352.csv', 'patient_256.csv'], ids_LARC)
+    Combined = uf.dataframe_of_f1scores(excel_path, 'Combined_new', ['patient_352.csv', 'patient_256.csv'], ids_Comb)
+
+    # Creating dictionary of dataframes
+    dictionary = {'OxyTarget': Oxy, 'LARC-RRP': LARC, 'Combined': Combined}
+    medians = {}
+
+    col_names_lr = ['1e-03', '1e-04', '1e-05']
+    col_names_loss = ['Dice', 'Modified Dice']
+
+    for key in dictionary:
+        print(key)
+        #dictionary[key] = uf.swap_columns(dictionary[key], '1e-04+Dice', '1e-03+Dice')
+        for i in range(len(dictionary[key].columns)):
+            dictionary[key].columns.values[i] = col_names_loss[i]
+            if not col_names_loss[i] in medians:
+                medians[col_names_loss[i]] = [dictionary[key].median()[i]]
+            else:
+                medians[col_names_loss[i]].append(list(dictionary[key].median())[i])
+
+    colors_Oxy = '#9ecae1' # ['#deebf7','#9ecae1','#3182bd']
+    colors_LARC = '#fdae6b'  # ['#fee6ce','#fdae6b','#e6550d']
+    colors_Comb = '#a1d99b'  # ['#e5f5e0','#a1d99b','#31a354']
+
+    colors = [colors_Oxy, colors_LARC, colors_Comb]
+    markers = ['o', 's', '^']
+    print(medians)
+    print(np.mean(medians['Dice']))
+    print(np.mean(medians['Modified Dice']))
+
+    #uf.plot_learning_rates(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
+
+
+
+main_lr()
+
+
 
