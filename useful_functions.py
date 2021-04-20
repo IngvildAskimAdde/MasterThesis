@@ -331,3 +331,61 @@ def scatter_plot(max_dsc_list, color):
     plt.xticks(rotation=30)
     plt.ylim(-0.05, 1.05)
     plt.show()
+
+def plot_learning_rates(dictionary, x_labels, color=None, markers=None):
+    """
+    Plots the median dsc score obtain with different learning rates for the various datasets
+
+    :param dictionary: dictionary of datasets with corresponding median dsc scores for different learning rates
+    :param x_labels: list of names for datasets on the x-axis
+    :param color: list of colors corresponding to a dataset
+    :param markers: list of marker options
+    :return: scatter plot of median dsc scores
+    """
+    count = 0
+    plt.figure(figsize=(11,8))
+    for key in dictionary:
+        plt.scatter(x_labels, dictionary[key], color=color, marker=markers[count], facecolors='none', s=200, linewidths=2)
+        count += 1
+
+    legend_elements = [Line2D([0], [0], marker='o', color='k', label='1e-03',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='s', color='k', label='1e-04',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='^', color='k', label='1e-05',
+                              markerfacecolor='none', markersize=15, linestyle='none')]
+
+    plt.ylabel('DSC')
+    plt.xlabel(' ')
+    plt.ylim(-0.05, 1.05)
+    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.tight_layout()
+    plt.show()
+
+def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
+    """
+    Plots the median dsc score obtain with different loss functions for the various datasets
+
+    :param dictionary: dictionary of datasets with corresponding median dsc scores for different loss functions
+    :param x_labels: list of names for datasets on the x-axis
+    :param color: list of colors corresponding to a dataset
+    :param markers: list of marker options
+    :return: scatter plot of median dsc scores
+    """
+    count = 0
+    plt.figure(figsize=(11,8))
+    for key in dictionary:
+        plt.scatter(x_labels, dictionary[key], color=color, marker=markers[count], facecolors='none', s=200, linewidths=2)
+        count += 1
+
+    legend_elements = [Line2D([0], [0], marker='X', color='k', label='Dice',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='D', color='k', label='Modified Dice',
+                              markerfacecolor='none', markersize=15, linestyle='none')]
+
+    plt.ylabel('DSC')
+    plt.xlabel(' ')
+    plt.ylim(-0.05, 1.05)
+    plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.tight_layout()
+    plt.show()
