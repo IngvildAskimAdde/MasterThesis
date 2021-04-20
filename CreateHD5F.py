@@ -277,7 +277,7 @@ def generate_folds(splits:Dict[str,Set[int]], num_per_fold:int) -> Dict[str, Lis
 
     return folds
 
-def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], destination_path:str, out_name:str, data_path:Path, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
+def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], destination_path:str, out_name:str, data_path_Oxy:Path, data_path_LARC:Path, val=None, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
     """
     Generate a HDF5 file based on dataset splits.
 
@@ -306,7 +306,12 @@ def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], destination_path:str
                         # Update h5py
                         sub_group = split_group.create_group(foldname)
                         fold_names[split].append(foldname)
-                        fold = sorted(patient_iter_Oxy(data_path, dimension_list))
+
+                        if split=='val' and val=='LARC':
+                            fold = sorted(patient_iter_LARC(data_path_LARC, dimension_list))
+                        else:
+                            fold = sorted(patient_iter_Oxy(data_path_Oxy, dimension_list))
+
                         generate_fold_group(sub_group, fold)
 
     else:
@@ -325,12 +330,12 @@ def generate_hdf5_file_Oxy(folds:Dict[str, List[Set[int]]], destination_path:str
                         #Update h5py
                         sub_group = fold_group.create_group(foldname)
                         fold_names[split].append(foldname)
-                        fold = sorted(patient_iter_Oxy(data_path, split_list))
+                        fold = sorted(patient_iter_Oxy(data_path_Oxy, split_list))
                         generate_fold_group(sub_group, fold)
 
     return fold_names
 
-def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_path:Path, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
+def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_path_LARC:Path, data_path_Oxy:Path, val=None, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
     """
     Generate a HDF5 file based on dataset splits.
 
@@ -339,7 +344,7 @@ def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_
 
     fold_names = defaultdict(list)
 
-    out_file = data_path / out_name
+    out_file = data_path_LARC / out_name
     if not overwrite and out_file.is_file():
         raise RuntimeError("File exists")
 
@@ -358,7 +363,12 @@ def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_
                         # Update h5py
                         sub_group = split_group.create_group(foldname)
                         fold_names[split].append(foldname)
-                        fold = sorted(patient_iter_LARC(data_path, dimension_list))
+
+                        if split=='val' and val=='Oxy':
+                            fold = sorted(patient_iter_Oxy(data_path_Oxy, dimension_list))
+                        else:
+                            fold = sorted(patient_iter_LARC(data_path_LARC, dimension_list))
+
                         generate_fold_group(sub_group, fold)
 
     else:
@@ -377,7 +387,7 @@ def generate_hdf5_file_LARC(folds:Dict[str, List[Set[int]]], out_name:str, data_
                         #Update h5py
                         sub_group = fold_group.create_group(foldname)
                         fold_names[split].append(foldname)
-                        fold = sorted(patient_iter_LARC(data_path, split_list))
+                        fold = sorted(patient_iter_LARC(data_path_LARC, split_list))
                         generate_fold_group(sub_group, fold)
 
 
@@ -436,17 +446,17 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             generate_fold_group(sub_group, fold)
 
 
-splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_dict.txt')
+splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_valLARC_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
+splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_valOxy_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
 data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore')
 data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore'), out_name='traditionalSplit_Oxy_MatchedHistZScore.h5', data_path=data_path_Oxy, k_fold=False, overwrite=False)
-#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_MatchedHistZScore.h5', data_path=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore'), out_name='traditionalSplit_Oxy_MatchedHistZScore_valLARC.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, val='LARC', k_fold=False, overwrite=True)
+#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_MatchedHistZScore_valOxy.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, val='Oxy', k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_MatchedHistZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
@@ -493,6 +503,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/traditionalSplit_LARC_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore/traditionalSplit_Oxy_MatchedHistZScore_valLARC.h5', k_fold=True)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
