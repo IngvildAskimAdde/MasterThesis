@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import  matplotlib
 
-#LARC_ID_32 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_32/logs.csv')
-#Oxy_ID_21_new = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_21_new/logs.csv')
+#LARC_ID_35 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/logs.csv')
+Oxy_ID_24_new = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/logs.csv')
 #Oxy_ID_8_new = pd.read_csv('/Users/ingvildaskimadde/Desktop/Oxy_ID_8_new/logs.csv')
-Combined_ID_20_new = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_20_new/logs.csv')
+#Combined_ID_20_new = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_20_new/logs.csv')
 
 #Oxy_ID_21_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_21_new/patient.csv')
 #Oxy_ID_21_slice = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_21_new/slice.csv')
@@ -96,7 +96,7 @@ def get_data(dataframe, column):
 #median, std = calculate_median(dataframe)
 
 #max_dice, epoch = find_best_epoch(Combined_ID_9)
-max_dice, epoch = find_best_epoch(Combined_ID_20_new)
+max_dice, epoch = find_best_epoch(Oxy_ID_24_new)
 #mean, median = get_data(Oxy_ID_21_slice, 'f1_score')
 #mean = get_data(LARC_ID_10_slice, 'f1_score')
 
