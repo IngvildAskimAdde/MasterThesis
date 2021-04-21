@@ -289,12 +289,13 @@ def violinplot(dataframe, fontsize, labelsize, title, colors):
     matplotlib.rcParams.update({'font.size': fontsize})
     matplotlib.rcParams['font.family'] = "serif"
     matplotlib.rcParams.update({'xtick.labelsize': labelsize})
-    sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors)
+    sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors, cut=0)
     plt.xlabel(None)
     plt.ylabel('DSC')
     plt.title(title)
     plt.xticks(rotation=30)
-    plt.ylim(-0.35, 1.15)
+    #plt.ylim(-0.35, 1.15)
+    plt.ylim(-0.05, 1.05)
     plt.tight_layout()
     plt.show()
 

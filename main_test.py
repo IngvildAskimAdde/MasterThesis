@@ -85,9 +85,9 @@ def main_aug():
     excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
 
     # Define correct experiments (IDs)
-    ids_LARC = [24, 27, 28]
-    ids_Oxy = [16, 17, 18]
-    ids_Comb = [15, 16, 17]
+    ids_LARC = [8 ,32, 33, 34]
+    ids_Oxy = [8, 21, 22, 23]
+    ids_Comb = [1, 15, 16, 17]
 
     # Creating dataframes of det f1 scores of the validation patients
     Oxy = uf.dataframe_of_f1scores(excel_path, 'Oxy_new', ['patient.csv'], ids_Oxy)
@@ -97,13 +97,13 @@ def main_aug():
     # Creating dictionary of dataframes
     dictionary = {'OxyTarget': Oxy, 'LARC-RRP': LARC, 'Combined': Combined}
 
-    col_names_aug = ['No', 'Default', 'Best Combination']
+    #col_names_aug = ['No', 'Default', 'Best Combination']
     col_names_norm = ['No', 'Z-Score', 'Matched Hist', 'Matched Hist + Z-Score']
 
     for key in dictionary:
         print(key)
         for i in range(len(dictionary[key].columns)):
-            dictionary[key].columns.values[i] = col_names_aug[i]
+            dictionary[key].columns.values[i] = col_names_norm[i]
             print(dictionary[key].median())
         dictionary[key]['Data'] = key
         dictionary[key] = pd.melt(dictionary[key], id_vars=['Data'], var_name=['Parameters'])
@@ -112,10 +112,10 @@ def main_aug():
     colors_LARC = ['#fdae6b']  # ['#fee6ce','#fdae6b','#e6550d']
     colors_Comb = ['#a1d99b']  # ['#e5f5e0','#a1d99b','#31a354']
 
-    uf.violinplot(dictionary['LARC-RRP'], 20, 20, '', colors_LARC)
+    uf.violinplot(dictionary['OxyTarget'], 20, 20, '', colors_Oxy)
     # catplot_aug(dictionary['LARC-RRP'], 20, 20, '', col_names, colors_LARC, save=False)
 
-#main_aug()
+main_aug()
 
 def main_kfold(sheet_name, LARC=False):
 
@@ -204,7 +204,7 @@ def main_lr():
 
 
 
-main_lr()
+
 
 
 
