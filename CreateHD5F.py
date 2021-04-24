@@ -503,7 +503,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/traditionalSplit_LARC_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore/traditionalSplit_Oxy_MatchedHistZScore_valLARC.h5', k_fold=True)
+print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy/traditionalSplit_LARC_MatchedHistZScore_valOxy.h5', k_fold=True)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
