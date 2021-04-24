@@ -6,6 +6,7 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.lines import Line2D
 """
 image_path = '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/T2.nii'
 mask_path = '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/Manual_an.nii'
@@ -85,9 +86,9 @@ def main_aug():
     excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
 
     # Define correct experiments (IDs)
-    ids_LARC = [8 ,32, 33, 34]
+    ids_LARC = [8, 32, 33, 34]
     ids_Oxy = [8, 21, 22, 23]
-    ids_Comb = [1, 15, 16, 17]
+    ids_Comb = [3, 14, 13, 15]
 
     # Creating dataframes of det f1 scores of the validation patients
     Oxy = uf.dataframe_of_f1scores(excel_path, 'Oxy_new', ['patient.csv'], ids_Oxy)
@@ -98,7 +99,10 @@ def main_aug():
     dictionary = {'OxyTarget': Oxy, 'LARC-RRP': LARC, 'Combined': Combined}
 
     #col_names_aug = ['No', 'Default', 'Best Combination']
-    col_names_norm = ['No', 'Z-Score', 'Matched Hist', 'Matched Hist + Z-Score']
+    #col_names_aug = ['No', 'Default', 'BC']
+    #col_names_norm = ['No', 'Z-Score', 'Matched Hist', 'Matched Hist + Z-Score']
+    col_names_norm = ['No', 'Z-Score', 'MH', 'MH + Z-Score']
+
 
     for key in dictionary:
         print(key)
@@ -115,7 +119,7 @@ def main_aug():
     uf.violinplot(dictionary['OxyTarget'], 20, 20, '', colors_Oxy)
     # catplot_aug(dictionary['LARC-RRP'], 20, 20, '', col_names, colors_LARC, save=False)
 
-main_aug()
+#main_aug()
 
 def main_kfold(sheet_name, LARC=False):
 
@@ -160,6 +164,10 @@ def main_kfold(sheet_name, LARC=False):
 
     return max_dsc
 
+
+#main_kfold('LARC', True)
+
+
 def main_lr():
     excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
 
@@ -195,15 +203,115 @@ def main_lr():
     colors_Comb = '#a1d99b'  # ['#e5f5e0','#a1d99b','#31a354']
 
     colors = [colors_Oxy, colors_LARC, colors_Comb]
-    markers = ['o', 's', '^']
+    #markers = ['o', 's', '^']
+    markers = ['X', 'D']
     print(medians)
     print(np.mean(medians['Dice']))
     print(np.mean(medians['Modified Dice']))
 
-    #uf.plot_learning_rates(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
+    uf.plot_loss_functions(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
+
+#main_lr()
 
 
+def main_val():
 
+    # Define correct experiments csv files
+    Oxy_ID_27_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_27_new/patient_352.csv')
+    Oxy_ID_27_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_27_new/patient_256.csv')
+    Oxy_ID_27 = Oxy_ID_27_352.append(Oxy_ID_27_256, ignore_index=True)
+    Oxy_ID_27 = Oxy_ID_27.drop(['patient_ids'], axis=1)
+    Oxy_ID_27.rename(columns={'f1_score': 'Trained on OxyTarget'}, inplace=True)
+    Oxy_ID_27['Data'] = 'OxyTarget'
+    print(Oxy_ID_27.median())
+
+    Oxy_ID_24 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/patient.csv')
+    Oxy_ID_24 = Oxy_ID_24.drop(['patient_ids'], axis=1)
+    Oxy_ID_24.rename(columns={'f1_score': 'Trained on OxyTarget'}, inplace=True)
+    Oxy_ID_24['Data'] = 'OxyTarget'
+    print(Oxy_ID_24.median())
+
+    LARC_ID_38 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_38/patient.csv')
+    LARC_ID_38 = LARC_ID_38.drop(['patient_ids'], axis=1)
+    LARC_ID_38.rename(columns={'f1_score': 'Trained on LARC-RRP'}, inplace=True)
+    LARC_ID_38['Data'] = 'LARC-RRP'
+    print(LARC_ID_38.median())
+
+    LARC_ID_35_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/patient_352.csv')
+    LARC_ID_35_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/patient_256.csv')
+    LARC_ID_35 = LARC_ID_35_352.append(LARC_ID_35_256, ignore_index=True)
+    LARC_ID_35 = LARC_ID_35.drop(['patient_ids'], axis=1)
+    LARC_ID_35.rename(columns={'f1_score': 'Trained on LARC-RRP'}, inplace=True)
+    LARC_ID_35['Data'] = 'LARC-RRP'
+    print(LARC_ID_35.median())
+
+    #df = pd.concat([LARC_ID_35, Oxy_ID_27])
+    df = pd.concat([Oxy_ID_24, LARC_ID_38])
+    df = pd.melt(df, id_vars=['Data'], var_name=['Parameters'])
+    #print(df)
+
+    colors_LARC = ['#fdae6b']  # ['#fee6ce','#fdae6b','#e6550d']
+    colors_Oxy = ['#9ecae1']  # ['#deebf7','#9ecae1','#3182bd']
+    uf.violinplot(df, 20, 20, '', colors_Oxy)
+
+#main_val()
+
+def main_valfolds_1():
+    Oxy_ID_27_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_27_new/patient_352.csv')
+    Oxy_ID_27_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_27_new/patient_256.csv')
+
+    LARC_ID_35_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/patient_352.csv')
+    LARC_ID_35_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/patient_256.csv')
+
+    legend_elements = [Line2D([0], [0], marker='o', color='k', label='Trained on OxyTarget data',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='^', color='k', label='Trained on LARC-RRP data',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], color='#fdae6b', label='Image dimension of 352x352', lw=4),
+                       Line2D([0], [0], color='#fe420f', label='Image dimension of 256x256', lw=4), ]
+
+    plt.figure(figsize=(14,8))
+    plt.scatter(Oxy_ID_27_352['patient_ids'], Oxy_ID_27_352['f1_score'], marker='o', color='#fdae6b', facecolors='none',
+                s=200, linewidths=2)
+    plt.scatter(Oxy_ID_27_256['patient_ids'], Oxy_ID_27_256['f1_score'], marker='o', color='#fe420f', facecolors='none',
+                s=200, linewidths=2)
+    plt.scatter(LARC_ID_35_352['patient_ids'], LARC_ID_35_352['f1_score'], marker='^', color='#fdae6b',
+                facecolors='none', s=200, linewidths=2)
+    plt.scatter(LARC_ID_35_256['patient_ids'], LARC_ID_35_256['f1_score'], marker='^', color='#fe420f',
+                facecolors='none', s=200, linewidths=2)
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.xlabel('Patient IDs')
+    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+    plt.ylim(-0.05, 1.05)
+    plt.tight_layout()
+    plt.show()
+
+#main_valfolds_1()
+
+def main_valfolds_2():
+    Oxy_ID_24 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/patient.csv')
+    LARC_ID_38 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_38/patient.csv')
+
+    legend_elements = [Line2D([0], [0], marker='o', color='k', label='Trained on OxyTarget data',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='^', color='k', label='Trained on LARC-RRP data',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], color='#9ecae1', label='Image dimension of 352x352', lw=4),
+                       ]
+
+    plt.figure(figsize=(14, 8))
+    plt.scatter(Oxy_ID_24['patient_ids'], Oxy_ID_24['f1_score'], marker='o', color='#9ecae1', facecolors='none', s=200,
+                linewidths=2)
+    plt.scatter(LARC_ID_38['patient_ids'], LARC_ID_38['f1_score'], marker='^', color='#9ecae1', facecolors='none',
+                s=200, linewidths=2)
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.xlabel('Patient IDs')
+    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+    plt.ylim(-0.05, 1.05)
+    plt.tight_layout()
+    plt.show()
+
+main_valfolds_2()
 
 
 

@@ -289,11 +289,15 @@ def violinplot(dataframe, fontsize, labelsize, title, colors):
     matplotlib.rcParams.update({'font.size': fontsize})
     matplotlib.rcParams['font.family'] = "serif"
     matplotlib.rcParams.update({'xtick.labelsize': labelsize})
-    sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors, cut=0)
+    sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors, scale='width', cut=0)
     plt.xlabel(None)
-    plt.ylabel('DSC')
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.title(title)
-    plt.xticks(rotation=30)
+
+    #legend_elements = [Line2D([0], [0], color=colors[0], label='OxyTarget validation patients', markersize=15, lw=8)]
+    #plt.legend(handles=legend_elements)
+
+    #plt.xticks(rotation=30)
     #plt.ylim(-0.35, 1.15)
     plt.ylim(-0.05, 1.05)
     plt.tight_layout()
@@ -308,7 +312,7 @@ def boxplot(dataframe, fontsize, labelsize, title, colors):
     matplotlib.rcParams.update({'xtick.labelsize': labelsize})
     sns.boxplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors)
     plt.xlabel(None)
-    plt.ylabel('DSC')
+    plt.ylabel(r'Mean DSC$_{\mathrm{S}}$')
     plt.title(title)
     plt.xticks(rotation=30)
     plt.ylim(-0.05, 1.05)
@@ -356,10 +360,10 @@ def plot_learning_rates(dictionary, x_labels, color=None, markers=None):
                        Line2D([0], [0], marker='^', color='k', label='1e-05',
                               markerfacecolor='none', markersize=15, linestyle='none')]
 
-    plt.ylabel('DSC')
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
     plt.ylim(-0.05, 1.05)
-    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
 
@@ -384,9 +388,9 @@ def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
                        Line2D([0], [0], marker='D', color='k', label='Modified Dice',
                               markerfacecolor='none', markersize=15, linestyle='none')]
 
-    plt.ylabel('DSC')
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
     plt.ylim(-0.05, 1.05)
-    plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
