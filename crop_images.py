@@ -78,6 +78,65 @@ def crop_images(dataframe, new_dimension, destination_folders_list, image_filena
         sitk.WriteImage(image_cropped, os.path.join(destination_folders_list[i], image_filename))
         sitk.WriteImage(mask_cropped, os.path.join(destination_folders_list[i], mask_filename))
 
+def crop_masks(dataframe, new_dimension, destination_folders_list, mask_filename, tumor_value):
+    """
+    The function crops the masks with path given under 'maskPaths' in the dataframe to the dimension specified by new_dimension.
+    The cropped images and masks are saved to the destination paths, given in destination_folders_list.
+
+    :param dataframe: dataframe containing information of image/mask paths and dimensions
+    :param new_dimension: wanted image dimensions after cropping
+    :param destination_folders_list: list of destination paths to each patient
+    :param mask_filename: filename of mask
+    :param tumor_value: value of tumor voxels in mask
+    :return: cropped masks are saved to destination paths
+    """
+    for i in range(len(dataframe['maskPaths'])):
+
+        mask_original = sitk.ReadImage(dataframe['maskPaths'][i])
+        mask_imsize_original = mask_original.GetSize()
+
+        if mask_imsize_original[1] != 256:
+            crop_start = int((mask_imsize_original[1] - new_dimension) / 2)
+            print(crop_start)
+            crop_stop = int(mask_imsize_original[1] - crop_start)
+            print(crop_stop)
+
+            mask_cropped = mask_original[crop_start:crop_stop, (crop_start + 10):(crop_stop + 10), :]
+
+            print('Original masksize:', dataframe['maskPaths'][i], mask_original.GetSize())
+
+            print('Cropped masksize:', mask_cropped.GetSize())
+
+            mask_array_original = sitk.GetArrayFromImage(mask_original)
+            mask_array_cropped = sitk.GetArrayFromImage(mask_cropped)
+
+            tumor_originally = np.count_nonzero(mask_array_original.flatten() == tumor_value)
+            tumor_cropped = np.count_nonzero(mask_array_cropped.flatten() == tumor_value)
+
+            move_window = 0
+            while tumor_originally != tumor_cropped:
+                print('THE AMOUNT OF TUMOR IS REDUCED AFTER CROPPING! PATH:', dataframe['maskPaths'][i])
+
+                move_window += 5
+
+                if mask_filename=='Manual_shh.nii' or mask_filename=='Manual_an.nii':
+                    mask_cropped = mask_original[(crop_start - move_window):(crop_stop - move_window),
+                                   (crop_start + 10 - move_window):(crop_stop + 10 - move_window), :]
+                else:
+                    mask_cropped = mask_original[(crop_start + move_window):(crop_stop + move_window),
+                                   (crop_start + 10 + move_window):(crop_stop + 10 + move_window), :]
+
+                mask_array_cropped = sitk.GetArrayFromImage(mask_cropped)
+
+                tumor_cropped = np.count_nonzero(mask_array_cropped.flatten() == tumor_value)
+
+                print('Tumor before cropping:', tumor_originally)
+                print('Tumor after moving cropping window:', tumor_cropped)
+
+        else:
+            mask_cropped = mask_original
+
+        sitk.WriteImage(mask_cropped, os.path.join(destination_folders_list[i], mask_filename))
 
 
 
