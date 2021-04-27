@@ -95,13 +95,25 @@ def load_t2w_Oxy(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray]
     """
 
     image_names = ["T2.nii"]
-    mask_names = ["Manual_an.nii"]
+    #mask_names = ["Manual_an.nii"]
+    mask_names_1 = ["Manual_an.nii"]
+    mask_names_2 = ["Manual_shh.nii"]
 
     images = np.stack([load_nii(subject / image_name).T[:,::downsample, ::downsample]
                        for image_name in image_names], axis=-1)
 
-    masks = np.stack([load_nii(subject / mask_name).T[:,::downsample, ::downsample]
-                       for mask_name in mask_names], axis=-1)
+
+    path = subject / mask_names_2[0]
+    if path.exists():
+        masks = np.stack([load_nii(subject / mask_name).T[:, ::downsample, ::downsample]
+                           for mask_name in mask_names_2], axis=-1)
+        print(path)
+    else:
+        masks = np.stack([load_nii(subject / mask_name).T[:, ::downsample, ::downsample]
+                           for mask_name in mask_names_1], axis=-1)
+        print(subject / mask_names_1[0])
+    #masks = np.stack([load_nii(subject / mask_name).T[:,::downsample, ::downsample]
+    #                   for mask_name in mask_names], axis=-1)
 
     return images, masks
 
@@ -446,16 +458,16 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             generate_fold_group(sub_group, fold)
 
 
-splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_valLARC_patients_dict.txt')
+splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
 splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_valOxy_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore')
 data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore'), out_name='traditionalSplit_Oxy_MatchedHistZScore_valLARC.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, val='LARC', k_fold=False, overwrite=True)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore'), out_name='traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, val='Oxy', k_fold=False, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_MatchedHistZScore_valOxy.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, val='Oxy', k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_MatchedHistZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
 
@@ -503,7 +515,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_ZScoreNorm/traditionalSplit_LARC_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/traditionalSplit_LARC_Oxy.h5', k_fold=True)
-print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy/traditionalSplit_LARC_MatchedHistZScore_valOxy.h5', k_fold=True)
+print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/merge_images.h5', k_fold=False)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
