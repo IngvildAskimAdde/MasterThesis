@@ -2,7 +2,7 @@
 @author: huynhngoc
 """
 
-import customize_obj2
+import customize_obj_mask2
 
 
 if __name__ == '__main__':
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     dice_per_patient = output_folder + 'patient.csv'
     merge_file = output_folder + 'merge_images.h5'
 
-    customize_obj2.H5MetaDataMapping(
+    customize_obj_mask2.H5MetaDataMapping(
         dataset_file,
         dice_per_slice,
         folds=['val/352'], # change this to ['test'] if you want to calculate the dice of the test prediction
@@ -23,13 +23,13 @@ if __name__ == '__main__':
         dataset_names=['patient_ids'] #, 'slice_idx']
     ).post_process()
 
-    customize_obj2.H5CalculateFScore(
+    customize_obj_mask2.H5CalculateFScore(
         predicted_h5,
         dataset_file,
         dice_per_slice
     ).post_process()
 
-    customize_obj2.H5Merge2dSlice(
+    customize_obj_mask2.H5Merge2dSlice(
         predicted_h5,
         dataset_file,
         dice_per_slice,
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         save_file=dice_per_patient
     ).post_process()
 
-    customize_obj2.H5CalculateFScore(
+    customize_obj_mask2.H5CalculateFScore(
         merge_file,
         dataset_file,
         dice_per_patient,
