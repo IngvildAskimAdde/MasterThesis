@@ -40,7 +40,6 @@ def create_folder(src_main_folder, dst_main_folder, patient_identifier):
     else:
         print('No valid patient identifier')
 
-
 def create_dst_paths(dst_main_folder):
     """
     Creates a list of destination paths based on the structure of the dst_main_folder path
@@ -153,7 +152,6 @@ def dataframe_of_f1scores(excel_path: str, sheet_name: str, filetype: list, rang
 
     return df
 
-
 def swap_columns(df, c1, c2):
     """
     The function swaps the position of two columns (c1 and c2) in a dataframe (df).
@@ -165,6 +163,18 @@ def swap_columns(df, c1, c2):
     df.drop(columns=['temp'], inplace=True)
     df = df.rename(columns={c1:c2, c2:c1})
     return df
+
+
+####### Performance ########################################
+def calculate_dice(mask_a, mask_b):
+    """
+    Calculate DICE score for two binary masks (=sitk images)
+    """
+    npa1 = sitk.GetArrayFromImage(mask_a)
+    npa2 = sitk.GetArrayFromImage(mask_b)
+
+    dice = 2*np.count_nonzero(npa1 & npa2) / (np.count_nonzero(npa1) + np.count_nonzero(npa2))
+    return dice
 
 
 ###### Visualization of images ##############################
