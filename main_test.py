@@ -8,15 +8,18 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 """
-image_path = '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/T2.nii'
-mask_path = '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/Manual_an.nii'
+image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/T2.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_an.nii'
+mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image = sitk.ReadImage(image_path)
-mask = sitk.ReadImage(mask_path)
+mask_1 = sitk.ReadImage(mask_path_1)
+mask_2 = sitk.ReadImage(mask_path_2)
 
-v = iv.Viewer(view_mode='1', mask_to_show=['a'])
+v = iv.Viewer(view_mode='1', mask_to_show=['a','b'])
 v.set_image(image, label='image')
-v.set_mask(mask, label='mask', color_rgb=[60, 180, 75])
+v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
+v.set_mask(mask_2, label='mask 2')
 v.show()
 
 
@@ -27,16 +30,18 @@ uf.show_image_interactive('/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PR
 uf.show_image('/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/T2.nii',
               '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/Manual_an.nii',
               6)
-
-path = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_6_new/prediction.085.h5'
-#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_corrected.h5'
-indice = 354
-file = h5py.File(path,'r')
+"""
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/prediction.092.h5'
+path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
+indice = 10
+file1 = h5py.File(path1,'r')
+file2 = h5py.File(path2,'r')
 #data = file['val/352/input'][indice]
-data = file['x'][indice]
+data = file1['x'][indice]
 #mask = file['val/352/target_an'][indice]
-mask = file['y'][indice]
-predicted = file['predicted'][indice]
+mask1 = file1['y'][indice]
+mask2 = file2['val/352/target_an'][indice]
+predicted = file1['predicted'][indice]
 #patient = file['val/352/patient_ids'][indice]
 #print(data)
 #print(data.shape)
@@ -47,13 +52,16 @@ predicted = file['predicted'][indice]
 
 plt.figure(figsize=(11,8))
 plt.imshow(data, cmap='gray')#, vmin=-2, vmax=4)
-plt.contourf(predicted[...,0], levels=[0.5,1.0], alpha=0.5, colors='#F58230')
-plt.contour(predicted[...,0], levels=[0.5], linewidths=2.5, colors='#F58230')
-plt.contourf(mask[...,0], levels=[0.5,1.0], alpha=0.25, colors='#3cb44b')
-plt.contour(mask[...,0], levels=[0.5], linewidths=2.5, colors='#3cb44b')
+plt.contourf(predicted[...,0], levels=[0.5,1.0], alpha=0.5, colors='r')
+plt.contour(predicted[...,0], levels=[0.5], linewidths=2.5, colors='r')
+plt.contourf(mask1[...,0], levels=[0.5,1.0], alpha=0.25, colors='#3cb44b')
+plt.contour(mask1[...,0], levels=[0.5], linewidths=2.5, colors='#3cb44b')
+plt.contourf(mask2[...,0], levels=[0.5,1.0], alpha=0.25)
+plt.contour(mask2[...,0], levels=[0.5], linewidths=2.5)
 plt.axis('off')
 plt.show()
 
+"""
 
 def calculate_dice(mask_a, mask_b):
     
@@ -311,7 +319,7 @@ def main_valfolds_2():
     plt.tight_layout()
     plt.show()
 
-main_valfolds_2()
+#main_valfolds_2()
 
 
 
