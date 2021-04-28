@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
+import second_delineation as sd
 """
 image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/T2.nii'
 mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_an.nii'
@@ -30,7 +31,7 @@ uf.show_image_interactive('/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PR
 uf.show_image('/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/T2.nii',
               '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/Manual_an.nii',
               6)
-"""
+
 path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/prediction.092.h5'
 path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
 indice = 10
@@ -50,18 +51,25 @@ predicted = file1['predicted'][indice]
 #print(mask.max())
 #print(patient)
 
-plt.figure(figsize=(11,8))
+legend_elements = [Line2D([0], [0], color='red', label='Predicted Mask', lw=4),
+                 Line2D([0], [0], color='gold', label='Mask 1', lw=4),
+                   Line2D([0], [0], color='turquoise', label='Mask 2', lw=4)]
+
+plt.figure(figsize=(12,8))
 plt.imshow(data, cmap='gray')#, vmin=-2, vmax=4)
-plt.contourf(predicted[...,0], levels=[0.5,1.0], alpha=0.5, colors='r')
-plt.contour(predicted[...,0], levels=[0.5], linewidths=2.5, colors='r')
-plt.contourf(mask1[...,0], levels=[0.5,1.0], alpha=0.25, colors='#3cb44b')
-plt.contour(mask1[...,0], levels=[0.5], linewidths=2.5, colors='#3cb44b')
-plt.contourf(mask2[...,0], levels=[0.5,1.0], alpha=0.25)
-plt.contour(mask2[...,0], levels=[0.5], linewidths=2.5)
+plt.colorbar()
+plt.contourf(predicted[...,0], levels=[0.5,1.0], alpha=0.2, colors='red')
+plt.contour(predicted[...,0], levels=[0.5], linewidths=2.5, colors='red')
+plt.contourf(mask1[...,0], levels=[0.5,1.0], alpha=0.2, colors='gold')
+plt.contour(mask1[...,0], levels=[0.5], linewidths=2.5, colors='gold')
+plt.contourf(mask2[...,0], levels=[0.5,1.0], alpha=0.2, colors='turquoise')
+plt.contour(mask2[...,0], levels=[0.5], linewidths=2.5, colors='turquoise')
+plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
 plt.axis('off')
+plt.tight_layout()
 plt.show()
 
-"""
+
 
 def calculate_dice(mask_a, mask_b):
     
@@ -86,7 +94,7 @@ for i in range(masks.shape[0]):
     #dice_i = calculate_dice(true_mask, predicted_mask)
     #dice.append(dice_i)
 #print(dice)
-"""
+
 
 
 def main_aug():
@@ -320,7 +328,17 @@ def main_valfolds_2():
     plt.show()
 
 #main_valfolds_2()
+"""
 
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/prediction.022.h5'
+#path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
+uf.plot_image_slice(path1, indice=18)
+
+df1, df2 = sd.correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/slice.csv','/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/slice_mask2.csv')
+df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_352.csv')
+df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_256.csv')
+#df = df_352.append(df_256, ignore_index=True)
+df = uf.max_and_min_dsc_score(df_256)
 
 
 
