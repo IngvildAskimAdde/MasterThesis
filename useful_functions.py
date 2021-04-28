@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib
 from matplotlib.lines import Line2D
 import pandas as pd
+import h5py
 
 matplotlib.rcParams.update({'font.size': 25})
 matplotlib.rcParams['font.family'] = "serif"
@@ -177,6 +178,24 @@ def calculate_dice(mask_a, mask_b):
     return dice
 
 
+def max_and_min_dsc_score(df):
+
+    #Create dataframe of slices
+    df.drop(df.index[df['f1_score'] == 1.0], inplace=True)
+
+    #Find maximum dsc score
+    max_score = df['f1_score'].max()
+    print(df[df['f1_score'] == max_score].index.values)
+    print(max_score)
+
+    # Find minimum dsc score
+    min_score = df['f1_score'].min()
+    print(df[df['f1_score'] == min_score].index.values)
+    print(min_score)
+
+    return df
+
+
 ###### Visualization of images ##############################
 def show_image_interactive(image_path, mask_path, view_mode):
 
@@ -299,7 +318,8 @@ def violinplot(dataframe, fontsize, labelsize, title, colors):
     matplotlib.rcParams.update({'font.size': fontsize})
     matplotlib.rcParams['font.family'] = "serif"
     matplotlib.rcParams.update({'xtick.labelsize': labelsize})
-    sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors, scale='width', cut=0)
+    #sns.violinplot(x=dataframe['Parameters'], y=dataframe['value'], palette=colors, scale='width', cut=0)
+    sns.violinplot(x=dataframe['Mask'], y=dataframe['value'], palette=colors, scale='width', cut=0)
     plt.xlabel(None)
     plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.title(title)
@@ -404,3 +424,93 @@ def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
     plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
+
+def scatter_plot_masks(dsc1, dsc2,  dsc3, patient_ids, color=None, markers=None):
+    """
+    Plots the median dsc score obtain with different masks for the various datasets
+
+    :param dictionary: dictionary of datasets with corresponding median dsc scores for different loss functions
+    :param x_labels: list of names for datasets on the x-axis
+    :param color: list of colors corresponding to a dataset
+    :param markers: list of marker options
+    :return: scatter plot of median dsc scores
+    """
+
+    plt.figure(figsize=(11,8))
+    plt.scatter(patient_ids, dsc1, color=color, marker=markers[0], facecolors='none', s=200, linewidths=2)
+    plt.scatter(patient_ids, dsc2, color=color, marker=markers[1], facecolors='none', s=200, linewidths=2)
+    plt.scatter(patient_ids, dsc3, color=color, marker=markers[2], facecolors='none', s=200, linewidths=2)
+
+
+    legend_elements = [Line2D([0], [0], marker='^', color='k', label='Radiologist$_{\mathrm{O}}^{\mathrm{1}}}$',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='v', color='k', label='Radiologist$_{\mathrm{O}}^{\mathrm{2}}}$',
+                              markerfacecolor='none', markersize=15, linestyle='none'),
+                       Line2D([0], [0], marker='*', color='k', label='Interobserver',
+                              markerfacecolor='none', markersize=15, linestyle='none')
+                       ]
+
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.xlabel('Patient IDs')
+    plt.ylim(-0.05, 1.05)
+    plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.tight_layout()
+    plt.show()
+
+def plot_image_slice(prediction_path, indice, second_mask_path=None):
+    """
+    Function to plot an image slice with the corresponding predicted mask, ground truth mask (Mask 1)
+    and optional second ground truth mask (Mask 2)
+
+    :param prediction_path: path to predicted hdf5 file
+    :param indice: slice number
+    :param second_mask_path: path to hdf5 file with second delineations as target_an
+    :return: plot of slice with corresponding delineations
+    """
+
+    #Open files in read mode
+    predicted_file = h5py.File(prediction_path, 'r')
+
+    #Access the data
+    input_data = predicted_file['01/x'][indice]
+    mask_1 = predicted_file['01/y'][indice]
+    predicted_mask = predicted_file['01/predicted'][indice]
+
+    if second_mask_path:
+        second_mask_file = h5py.File(second_mask_path, 'r')
+        mask_2 = second_mask_file['val/352/target_an'][indice]
+
+        legend_elements = [Line2D([0], [0], color='red', label='Predicted Mask', lw=4),
+                           Line2D([0], [0], color='gold', label=r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}$', lw=4),
+                           Line2D([0], [0], color='turquoise', label=r'Radiologist$_{\mathrm{O}}^{\mathrm{2}}$', lw=4)]
+
+        plt.figure(figsize=(12, 8))
+        plt.imshow(input_data, cmap='gray')  # , vmin=-2, vmax=4)
+        plt.colorbar()
+        plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
+        plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
+        plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
+        plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
+        plt.contourf(mask_2[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='turquoise')
+        plt.contour(mask_2[..., 0], levels=[0.5], linewidths=2.5, colors='turquoise')
+        #plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+        #plt.legend(handles=legend_elements, bbox_to_anchor=(1.20, 1.0), loc='upper left')
+        plt.axis('off')
+        plt.tight_layout()
+        plt.show()
+
+    else:
+        legend_elements = [Line2D([0], [0], color='red', label='Predicted Mask', lw=4),
+                           Line2D([0], [0], color='gold', label=r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}$', lw=4)]
+
+        plt.figure(figsize=(12, 8))
+        plt.imshow(input_data, cmap='gray')  # , vmin=-2, vmax=4)
+        plt.colorbar()
+        plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
+        plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
+        plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
+        plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
+        #plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+        plt.axis('off')
+        plt.tight_layout()
+        plt.show()
