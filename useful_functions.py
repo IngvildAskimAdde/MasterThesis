@@ -9,6 +9,7 @@ import matplotlib
 from matplotlib.lines import Line2D
 import pandas as pd
 import h5py
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 matplotlib.rcParams.update({'font.size': 25})
 matplotlib.rcParams['font.family'] = "serif"
@@ -300,13 +301,27 @@ def plot_matched_images(source_image_path, reference_image_path, matched_image_p
     for aa in (ax1, ax2, ax3):
         aa.set_axis_off()
 
-    ax1.imshow(source_image_array[slice_number], cmap='gray')
+    im1 = ax1.imshow(source_image_array[slice_number], cmap='gray')
+    plt.colorbar(im1, ax=ax1, shrink=0.67)
     #ax1.set_title('Input Image')
-    ax2.imshow(ref_image_array[slice_number_ref], cmap='gray')
+    im2 = ax2.imshow(ref_image_array[slice_number_ref], cmap='gray')
+    plt.colorbar(im2, ax=ax2, shrink=0.67)
     #ax2.set_title('Reference Image')
-    ax3.imshow(matched_image_array[slice_number], cmap='gray')
+    im3 = ax3.imshow(matched_image_array[slice_number], cmap='gray')
+    plt.colorbar(im3, ax=ax3, shrink=0.67)
     #ax3.set_title('Matched Image')
+    plt.tight_layout()
+    plt.show()
 
+def plot_slice_nifti(path1, slice):
+
+    image = sitk.ReadImage(path1)
+    image_array = sitk.GetArrayFromImage(image)
+
+    plt.figure(figsize=(11,8))
+    plt.imshow(image_array[slice], cmap='gray')
+    plt.colorbar()
+    plt.axis('off')
     plt.tight_layout()
     plt.show()
 
