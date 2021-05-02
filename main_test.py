@@ -8,21 +8,22 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
-"""
-image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/T2.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_an.nii'
-mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
+
+image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-080/image.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-080/1 RTSTRUCT LARC_MRS1-label.nii'
+#mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image = sitk.ReadImage(image_path)
 mask_1 = sitk.ReadImage(mask_path_1)
-mask_2 = sitk.ReadImage(mask_path_2)
+#mask_2 = sitk.ReadImage(mask_path_2)
 
-v = iv.Viewer(view_mode='1', mask_to_show=['a','b'])
+v = iv.Viewer(view_mode='2', mask_to_show=['a','b'])
 v.set_image(image, label='image')
 v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
-v.set_mask(mask_2, label='mask 2')
+#v.set_mask(mask_2, label='mask 2')
 v.show()
 
+"""
 
 uf.show_image_interactive('/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/T2.nii',
                          '/Volumes/Untitled 1/Ingvild_Oxytarget/Oxytarget_74_PRE/Manual_an.nii',
@@ -330,15 +331,15 @@ def main_valfolds_2():
 #main_valfolds_2()
 """
 
-path_LARC_org = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-035/image.nii'
-path_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii'
-path_LARC_new = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy/LARC-RRP-035/image.nii'
+#path_LARC_org = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-035/image.nii'
+#path_Oxy = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii'
+#path_LARC_new = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy/LARC-RRP-035/image.nii'
                       # 20, 2)
-uf.plot_slice_nifti(path_LARC_new, 20)
+#uf.plot_slice_nifti(path_LARC_new, 20)
 
-#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/prediction.022.h5'
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_6/prediction.017.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-#uf.plot_image_slice(path_LARC_org, indice=20)
+uf.plot_image_slice(path1, indice=250)
 
 #df1, df2 = sd.correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/slice.csv','/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/slice_mask2.csv')
 #df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_352.csv')

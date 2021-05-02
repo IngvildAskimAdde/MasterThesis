@@ -487,9 +487,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['01/x'][indice]
-    mask_1 = predicted_file['01/y'][indice]
-    predicted_mask = predicted_file['01/predicted'][indice]
+    input_data = predicted_file['00/x'][indice]
+    mask_1 = predicted_file['00/y'][indice]
+    predicted_mask = predicted_file['00/predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
