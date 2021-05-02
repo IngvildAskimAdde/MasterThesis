@@ -9,8 +9,12 @@ import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
 
-image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-080/image.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-080/1 RTSTRUCT LARC_MRS1-label.nii'
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5'
+#path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
+uf.plot_image_slice(path1, indice=281)
+
+image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image = sitk.ReadImage(image_path)
@@ -337,9 +341,9 @@ def main_valfolds_2():
                       # 20, 2)
 #uf.plot_slice_nifti(path_LARC_new, 20)
 
-path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_6/prediction.017.h5'
+#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_6/prediction.017.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-uf.plot_image_slice(path1, indice=250)
+#uf.plot_image_slice(path1, indice=328)
 
 #df1, df2 = sd.correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/slice.csv','/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/slice_mask2.csv')
 #df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_352.csv')

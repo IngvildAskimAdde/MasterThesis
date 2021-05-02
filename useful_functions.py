@@ -487,9 +487,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['00/x'][indice]
-    mask_1 = predicted_file['00/y'][indice]
-    predicted_mask = predicted_file['00/predicted'][indice]
+    input_data = predicted_file['train/352/input'][indice]
+    mask_1 = predicted_file['train/352/target_an'][indice]
+    #predicted_mask = predicted_file['00/predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
@@ -502,8 +502,8 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.figure(figsize=(12, 8))
         plt.imshow(input_data, cmap='gray')  # , vmin=-2, vmax=4)
         plt.colorbar()
-        plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
-        plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
+        #plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
+        #plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
         plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
         plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
         plt.contourf(mask_2[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='turquoise')
@@ -515,14 +515,14 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.show()
 
     else:
-        legend_elements = [Line2D([0], [0], color='red', label='Predicted Mask', lw=4),
-                           Line2D([0], [0], color='gold', label=r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}$', lw=4)]
+        legend_elements = [Line2D([0], [0], color='red', label='Predicted Mask', lw=4)]#,
+                           #Line2D([0], [0], color='gold', label=r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}$', lw=4)]
 
         plt.figure(figsize=(12, 8))
         plt.imshow(input_data, cmap='gray')  # , vmin=-2, vmax=4)
         plt.colorbar()
-        plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
-        plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
+        #plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
+        #plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
         plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
         plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
         #plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
