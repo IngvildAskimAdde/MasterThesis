@@ -12,9 +12,9 @@ def get_images_and_targets(filepath, indice):
     Returns normalized images and targets from the given indices from the hdf5 file.
     """
     with h5py.File(filepath, 'r') as f:
-        images = f['train/352']['input'][indice]
-        targets = f['train/352']['target_an'][indice]
-        images, targets = ImageNormalizerPreprocessor(0,1000).transform(images, targets)
+        images = f['val/352']['input'][indice]
+        targets = f['val/352']['target_an'][indice]
+        #images, targets = ImageNormalizerPreprocessor(0,1000).transform(images, targets)
         #images, targets = HounsfieldWindowingPreprocessor(4500,10000,0).transform(images, targets)
         return images, targets
 
@@ -22,11 +22,15 @@ def plot_single_image(img, contour):
     """
     Plots a single image and contour.
     """
-    plt.figure()
-    ax = plt.subplot(111)
-    ax.imshow(img[0][..., 0], 'gray', vmin=0, vmax=1)
-    ax.axis('off')
-    ax.contour(contour[0][..., 0], 1, levels=[0.5], colors='yellow')
+    plt.figure(figsize=(11,8))
+    #ax = plt.subplot(111)
+    plt.imshow(img[0][..., 0], 'gray') #, vmin=0, vmax=1)
+    plt.colorbar()
+    plt.axis('off')
+    #ax.contour(contour[0][..., 0], 1, levels=[0.5], colors='gold')
+    plt.contourf(contour[0][..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
+    plt.contour(contour[0][..., 0], levels=[0.5], linewidths=2.5, colors='gold')
+    plt.tight_layout
     plt.show()
 
 def plot_4_single(images, targets):
@@ -110,15 +114,20 @@ def blur(img, contour, blur_value, channel):
 
 
 
-path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
-#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5'
+#path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC.h5'
+path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy.h5'
 #path = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5'
-indice = [603]#, 10, 14, 16]
-#images, targets = get_images_and_targets(path, indice)
+indice = [10] #[603]#, 10, 14, 16]
+images, targets = get_images_and_targets(path, indice)
 #plot_single_image(images, targets)
 #flip(images, targets, axis=0)
 #rotate(images, targets, degrees=90)
-#blur(images, targets, blur_value=0.5, channel=None)
+#blur(images, targets, blur_value=1.5, channel=None)
+#zoom(images, targets, zoom=1.5)
+#shift(images, targets, shift_range=[10,10])
+brightness(images, targets, brightness_factor=1.2, channel=None)
+#contrast(images, targets, contrast_factor=0.7, channel=None)
+#noise(images, targets, noise_var=0.05, channel=None)
 
 
 file = h5py.File(path,'r')
@@ -134,12 +143,12 @@ for i in range(length):
     if mask_max != 1.0 and mask_max != 0.0:
         print('ALERT')
 """
-data = file['train/352/input'][603]
-mask = file['val/352/target_an'][603]
-patient = file['train/352/patient_ids'][603]
+#data = file['train/352/input'][603]
+#mask = file['val/352/target_an'][603]
+#patient = file['train/352/patient_ids'][603]
 #print(data)
 #print(data.shape)
 #print(data[0][...,0].shape)
-print(data.max())
-print(mask.max())
-print(patient)
+#print(data.max())
+#print(mask.max())
+#print(patient)

@@ -9,12 +9,19 @@ import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
 
-path1 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5'
+#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-uf.plot_image_slice(path1, indice=281)
+#uf.plot_image_slice(path1, indice=281)
 
-image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
+#image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
+#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
+
+#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_43/prediction.044.h5'
+#path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5'
+#uf.plot_image_slice(path1, indice=350)
+
+image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore/LARC-RRP-033/image.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore/LARC-RRP-033/1 RTSTRUCT LARC_MRS1-label.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image = sitk.ReadImage(image_path)
@@ -350,6 +357,8 @@ def main_valfolds_2():
 #df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_256.csv')
 #df = df_352.append(df_256, ignore_index=True)
 #df = uf.max_and_min_dsc_score(df_256)
+
+
 
 
 

@@ -67,11 +67,11 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHist', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore', 'T2.nii', 'Manual_an.nii')
 
-#df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 #df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore', 'T2.nii', 'Manual_an.nii')
 #df_small_LARC = df_LARC[:5]
 #df_small_Oxy = df_Oxy[:5]
 #df_small = df_small_Oxy.append(df_small_LARC)
 #df_small = df_small.reset_index()
 
-#uf.plot_pixel_distribution(df_small)
+uf.plot_pixel_distribution(df_LARC)
