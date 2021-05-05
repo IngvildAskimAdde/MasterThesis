@@ -138,7 +138,64 @@ def crop_masks(dataframe, new_dimension, destination_folders_list, mask_filename
 
         sitk.WriteImage(mask_cropped, os.path.join(destination_folders_list[i], mask_filename))
 
+def remove_nonTumor_slices(dataframe):
+    """
 
+    :param dataframe: dataframe with image paths and mask paths
+    :return: saves images and masks which only contains tumor for each patient
+    """
+
+    #Iterate through each patient
+    for i in range(len(dataframe['maskPaths'])):
+
+        #Create image and mask object from file path
+        image = sitk.ReadImage(dataframe['imagePaths'][i])
+        mask = sitk.ReadImage(dataframe['maskPaths'][i])
+        print(dataframe['imagePaths'][i])
+        print(dataframe['maskPaths'][i])
+
+        #Create image and mask as arrays
+        image_array = sitk.GetArrayFromImage(image)
+        mask_array = sitk.GetArrayFromImage(mask)
+        slices = image.GetSize()[2] #Number of slices for the given patient
+
+        tumor_slices = []
+
+        #Iterate through all the image slices for a patient
+        for j in range(slices):
+            #If the slice contains tumor then save the slice index in the tumor_slices list
+            if 1 in mask_array[j][:][:]:
+                tumor_slices.append(j)
+
+        #Get the x- and y-dimensions of the images and masks
+        x_dim = int(mask_array.shape[1])
+        y_dim = int(mask_array.shape[2])
+
+        #Create new image and mask arrays with the shape of the original image and mask objects, and with
+        #the same number of slices as saved in tumor_slices list
+        new_mask_array = np.zeros((len(tumor_slices), x_dim, y_dim))
+        new_image_array = np.zeros((len(tumor_slices), x_dim, y_dim))
+
+        #Save the new images and masks as the original images and masks with tumor
+        for k in range(len(tumor_slices)):
+            new_mask_array[k][:][:] = mask_array[tumor_slices[k]][:][:]
+            new_image_array[k][:][:] = image_array[tumor_slices[k]][:][:]
+
+        #Create image and mask from new arrays
+        new_mask = sitk.GetImageFromArray(new_mask_array)
+        new_image = sitk.GetImageFromArray(new_image_array)
+
+        #Save the new images and masks (only containing tumor) in the destination paths
+        sitk.WriteImage(new_image, dataframe['imagePaths'][i])
+        sitk.WriteImage(new_mask, dataframe['maskPaths'][i])
+
+if __name__ == '__main__':
+
+    LARC_patientPaths, LARC_patientNames, LARC_imagePaths, LARC_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TumorSlices', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+    LARC_df = p.dataframe(LARC_patientPaths, LARC_patientNames, LARC_imagePaths, LARC_maskPaths)
+    LARC_df = p.dimensions(LARC_df)
+
+    remove_nonTumor_slices(LARC_df)
 
 #Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/Untitled 1/Ingvild_Oxytarget', 'T2', 'an.nii')
 
