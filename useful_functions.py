@@ -27,9 +27,9 @@ def create_folder(src_main_folder, dst_main_folder, patient_identifier):
     patient_list = [i for i in os.listdir(src_main_folder) if i.startswith(patient_identifier)]
 
     if patient_identifier == 'LARC-RRP':
-        scan_time_point_folder = 'MRS1'
+        #scan_time_point_folder = 'MRS1'
         for patient in patient_list:
-            os.makedirs(os.path.join(dst_main_folder, patient, scan_time_point_folder))
+            os.makedirs(os.path.join(dst_main_folder, patient))#, scan_time_point_folder))
 
     elif patient_identifier == 'Oxytarget':
         for patient in patient_list:
@@ -487,9 +487,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['x'][indice]
-    mask_1 = predicted_file['y'][indice]
-    predicted_mask = predicted_file['predicted'][indice]
+    input_data = predicted_file['01/x'][indice]
+    mask_1 = predicted_file['01/y'][indice]
+    predicted_mask = predicted_file['01/predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
@@ -529,3 +529,19 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.axis('off')
         plt.tight_layout()
         plt.show()
+
+def show_dwi_image(image_path, slice_number, mask_path=None):
+
+    image = sitk.ReadImage(image_path)
+    image_array = sitk.GetArrayFromImage(image)
+    plt.figure(figsize=(11,8))
+    plt.imshow(image_array[slice_number], cmap='magma')#, vmin=-2, vmax=4)
+
+    if mask_path:
+        mask = sitk.ReadImage(mask_path)
+        mask_array = sitk.GetArrayFromImage(mask)
+        plt.imshow(mask_array[slice_number], cmap='gray', alpha=0.5)
+
+    plt.colorbar()
+    plt.axis('off')
+    plt.show()

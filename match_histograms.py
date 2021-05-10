@@ -11,8 +11,8 @@ def match_all_histograms(source_folder, destination_folder, image_filename, mask
     df = p.create_dataframe(source_folder, image_filename, mask_filename)
     dst_paths = uf.create_dst_paths(destination_folder)
 
-    #reference_image = sitk.ReadImage(reference_image_path)
-    reference_image = sitk.ReadImage('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii')
+    reference_image = sitk.ReadImage(reference_image_path)
+    #reference_image = sitk.ReadImage('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii')
     reference_image_array = sitk.GetArrayFromImage(reference_image)
 
     for i in range(len(df['imagePaths'])):
@@ -30,15 +30,15 @@ def match_all_histograms(source_folder, destination_folder, image_filename, mask
         sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
 
 
-#match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped',
-#                     '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped_MatchedHist',
+#match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TumorSlices',
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHOnOxy',
 #                     'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii',
-#                     '/Volumes/LaCie/MasterThesis_Ingvild/LARC_cropped/LARC-RRP-003/image.nii')
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TumorSlices/LARC-RRP-003/image.nii')
 
-#match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected',
-#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHist',
+#match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS',
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MH',
 #                     'T2.nii', 'Manual_an.nii',
-#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii')
+#                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii')
 
 #match_all_histograms('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped',
 #                     '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy',
@@ -48,7 +48,7 @@ def match_all_histograms(source_folder, destination_folder, image_filename, mask
 
 
 
-uf.plot_matched_images('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-035/image.nii',
-                       '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii',
-                       '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy/LARC-RRP-035/image.nii',
-                       20, 2)
+#uf.plot_matched_images('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TumorSlices/LARC-RRP-035/image.nii',
+#                       '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii',
+#                       '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MH/LARC-RRP-035/image.nii',
+#                       20, 2)

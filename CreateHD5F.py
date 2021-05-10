@@ -464,15 +464,15 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
 splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
-splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict_352.txt')
+splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore')
-data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore')
+data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHZScoreOnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore'), out_name='traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, val='Oxy', k_fold=False, overwrite=True)
-#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_352_MHZScore.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, k_fold=False, overwrite=False)
-#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_MatchedHistZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS'), out_name='traditionalSplit_Oxy_TS.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_TS.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, k_fold=False, overwrite=False)
+#generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_TS_MHZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='KFoldSplit_5splits_LARC.h5', data_path=data_path_LARC, k_fold=True, overwrite=True)
@@ -514,10 +514,10 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_corrected/traditionalSplit_Oxy_corrected.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/traditionalSplit_Oxy_TS_ZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore_TS.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/merge_images.h5', k_fold=False)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)

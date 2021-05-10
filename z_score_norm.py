@@ -65,13 +65,16 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
         sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
 
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHist', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore', 'T2.nii', 'Manual_an.nii')
+#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MH', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'T2.nii', 'Manual_an.nii')
+#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHZScoreOnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 
-df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-#df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_cropped_MatchedHistZScore', 'T2.nii', 'Manual_an.nii')
-#df_small_LARC = df_LARC[:5]
+#df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHZScore', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+#df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'T2.nii', 'Manual_an.nii')
+#df_small_LARC = df_LARC[:10]
 #df_small_Oxy = df_Oxy[:5]
 #df_small = df_small_Oxy.append(df_small_LARC)
 #df_small = df_small.reset_index()
 
-uf.plot_pixel_distribution(df_LARC)
+#uf.plot_pixel_distribution(df_small_Oxy)
+
+#uf.create_folder('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'Oxytarget')
