@@ -9,9 +9,9 @@ import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
 
-#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5'
+#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_53/prediction.039.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-#uf.plot_image_slice(path1, indice=281)
+#uf.plot_image_slice(path1, indice=4)
 
 #image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
 #mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
@@ -20,17 +20,33 @@ import second_delineation as sd
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5'
 #uf.plot_image_slice(path1, indice=350)
 
-image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore/LARC-RRP-033/image.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore/LARC-RRP-033/1 RTSTRUCT LARC_MRS1-label.nii'
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/Oxytarget_32_PRE/T2.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/Oxytarget_32_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
+uf.plot_slice_nifti(image_path_1, 8)
 
-image = sitk.ReadImage(image_path)
+
+image_1 = sitk.ReadImage(image_path_1)
 mask_1 = sitk.ReadImage(mask_path_1)
 #mask_2 = sitk.ReadImage(mask_path_2)
 
 v = iv.Viewer(view_mode='2', mask_to_show=['a','b'])
-v.set_image(image, label='image')
+v.set_image(image_1, label='image')
 v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
+#v.set_mask(mask_2, label='mask 2')
+v.show()
+
+image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_32_PRE/T2.nii'
+mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_32_PRE/Manual_an.nii'
+#mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
+
+image_2 = sitk.ReadImage(image_path_2)
+mask_2 = sitk.ReadImage(mask_path_2)
+#mask_2 = sitk.ReadImage(mask_path_2)
+
+v = iv.Viewer(view_mode='2', mask_to_show=['a','b'])
+v.set_image(image_2, label='image')
+v.set_mask(mask_2, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
