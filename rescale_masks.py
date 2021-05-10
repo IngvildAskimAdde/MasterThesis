@@ -36,8 +36,8 @@ def rescale(dataframe, tumor_value):
         print(np.unique(mask_rescaled))
 
 
-#Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Oxy_cropped_corrected', 'T2', 'an.nii')
-#Oxy_df = p.dataframe(Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths)
+Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all', 'T2', 'an.nii')
+Oxy_df = p.dataframe(Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths)
 
-#rescale(Oxy_df, 1000)
+rescale(Oxy_df, 1000)
 
