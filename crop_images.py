@@ -189,13 +189,62 @@ def remove_nonTumor_slices(dataframe):
         sitk.WriteImage(new_image, dataframe['imagePaths'][i])
         sitk.WriteImage(new_mask, dataframe['maskPaths'][i])
 
+
+def crop_t2_dwi_mask(dataframe, new_dimension):#, tumor_value):#, destination_folders_list, image_filename, mask_filename, dwi_filename, tumor_value):
+    """
+    The function crops the images with path given under 'imagePaths' in the dataframe to the dimension specified by new_dimension.
+    The cropped images and masks are saved to the destination paths, given in destination_folders_list.
+
+    :param dataframe: dataframe containing information of image/mask paths and dimensions
+    :param new_dimension: wanted image dimensions after cropping
+    :param destination_folders_list: list of destination paths to each patient
+    :param image_filename: filename of image
+    :param mask_filename: filename of mask
+    :param tumor_value: value of tumor voxels in mask
+    :return: cropped images and masks are saved to destination paths
+    """
+    for row in range(dataframe.shape[0]):
+        print(dataframe['mask'][row])
+        mask_original = sitk.ReadImage(dataframe['mask'][row])
+        mask_size_original = mask_original.GetSize()
+
+        if mask_size_original[1] != 256:
+            crop_start = int((mask_size_original[1] - new_dimension) / 2)
+            print(crop_start)
+            crop_stop = int(mask_size_original[1] - crop_start)
+            print(crop_stop)
+
+            mask_cropped = mask_original[crop_start:crop_stop, (crop_start + 10):(crop_stop + 10), :]
+
+            print('Original masksize:', dataframe['mask'][row], mask_original.GetSize())
+            print('Cropped masksize:', mask_cropped.GetSize())
+
+            print(sitk.GetArrayFromImage(mask_original).max())
+            print(np.unique(sitk.GetArrayFromImage(mask_original)))
+            print(np.unique(sitk.GetArrayFromImage(mask_original)).dtype)
+
+            mask_array_original = sitk.GetArrayFromImage(mask_original)
+            mask_array_cropped = sitk.GetArrayFromImage(mask_cropped)
+
+            #tumor_originally = np.count_nonzero(mask_array_original.flatten() == tumor_value)
+            #tumor_cropped = np.count_nonzero(mask_array_cropped.flatten() == tumor_value)
+
+        #for column in dataframe.columns[:-1]:
+        #    print(dataframe[column][row])
+        #t2_original = sitk.ReadImage(dataframe['t2Paths'][i])
+        #dwi_original = sitk.ReadImage(dataframe['dwiPaths'][i])
+        #mask_original = sitk.ReadImage(dataframe['maskPaths'][i])
+        #dwi_imsize_original = dwi_original.GetSize()
+
+
+
 if __name__ == '__main__':
 
-    LARC_patientPaths, LARC_patientNames, LARC_imagePaths, LARC_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TumorSlices', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-    LARC_df = p.dataframe(LARC_patientPaths, LARC_patientNames, LARC_imagePaths, LARC_maskPaths)
-    LARC_df = p.dimensions(LARC_df)
+    Oxy_patientPaths, Oxy_patientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS', 'T2.nii', 'Manual_an.nii')
+    Oxy_df = p.dataframe(Oxy_patientPaths, Oxy_patientNames, Oxy_imagePaths, Oxy_maskPaths)
+    Oxy_df = p.dimensions(Oxy_df)
 
-    remove_nonTumor_slices(LARC_df)
+    remove_nonTumor_slices(Oxy_df)
 
 #Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/Untitled 1/Ingvild_Oxytarget', 'T2', 'an.nii')
 
