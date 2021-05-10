@@ -58,7 +58,7 @@ def get_paths(main_folder, image_prefix, mask_suffix):
             for i in os.listdir(patientsPath):
                 if i.startswith(image_prefix):
                     patientsPaths_image.append(os.path.join(patientsPath, i))
-                else:
+                if i.endswith(mask_suffix):
                     patientsPaths_groundTruth.append(os.path.join(patientsPath, i))
 
     if main_folder.endswith('LARC_T2_preprocessed'):
