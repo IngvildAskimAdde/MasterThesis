@@ -5,7 +5,8 @@ import SimpleITK as sitk
 import Preprocessing as p
 import useful_functions as uf
 import os
-import matplotlib.pyplot as plt
+import pandas as pd
+import get_data as gd
 
 
 def zscore_norm(data):
@@ -39,7 +40,7 @@ def reconstruct_normalized_image_array(array, image_size):
 
     return im
 
-def normalize_all(source_folder, destination_folder, image_filename, mask_filename):
+def normalize_all(source_folder, destination_folder, image_filename, mask_filename, DWI=False):
     """
     Normalizes all images in a source folder, and saves the images and masks in a destination folder
 
@@ -50,26 +51,49 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
     :return: normalized images and masks saved in destination folder
     """
 
-    df = p.create_dataframe(source_folder, image_filename, mask_filename)
     dst_paths = uf.create_dst_paths(destination_folder)
 
-    for i in range(len(df['imagePaths'])):
-        print('Normalizing:', df['imagePaths'][i])
-        array, image_size = uf.get_array_from_image(df['imagePaths'][i])
-        norm_array = zscore_norm(array)
+    if DWI:
+        patientPaths, patientNames, imagePaths, maskPaths = gd.get_paths(source_folder, image_filename, mask_filename)
+        dwiPaths = uf.dwi_path(patientPaths)
+        df = pd.DataFrame(dwiPaths)
+        rows = df.shape[0]
+        for i in range(rows):
+            for column in df.columns[:-1]:
+                if os.path.isfile(df[column][i]):
+                    print('Normalizing:', df[column][i])
+                    array, image_size = uf.get_array_from_image(df[column][i])
+                    norm_array = zscore_norm(array)
 
-        norm_image = reconstruct_normalized_image_array(norm_array, image_size)
-        mask = sitk.ReadImage(df['maskPaths'][i])
+                    norm_image = reconstruct_normalized_image_array(norm_array, image_size)
 
-        sitk.WriteImage(norm_image, os.path.join(dst_paths[i], image_filename))
-        sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
+                    im_filename = column + '.nii'
+                    sitk.WriteImage(norm_image, os.path.join(dst_paths[i], im_filename))
+                else:
+                    print(df[column][i], 'does not exist')
 
-#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_MatchedHistZScore_OnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MH', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'T2.nii', 'Manual_an.nii')
+            print('Saving mask', df['mask'][i])
+            mask = sitk.ReadImage(df['mask'][i])
+            sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
+    else:
+        df = p.create_dataframe(source_folder, image_filename, mask_filename)
+        for i in range(len(df['imagePaths'])):
+            print('Normalizing:', df['imagePaths'][i])
+            array, image_size = uf.get_array_from_image(df['imagePaths'][i])
+            norm_array = zscore_norm(array)
+
+            norm_image = reconstruct_normalized_image_array(norm_array, image_size)
+            mask = sitk.ReadImage(df['maskPaths'][i])
+
+            sitk.WriteImage(norm_image, os.path.join(dst_paths[i], image_filename))
+            sitk.WriteImage(mask, os.path.join(dst_paths[i], mask_filename))
+
+#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHZScoreOnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+#normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MH', '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MHZScore', 'T2.nii', 'Manual_an.nii', DWI=True)
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHZScoreOnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 
-#df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHZScore', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-#df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'T2.nii', 'Manual_an.nii')
+#df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHZScore', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+#df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MHZScore', 'b4.nii', 'Manual_an.nii')
 #df_small_LARC = df_LARC[:10]
 #df_small_Oxy = df_Oxy[:5]
 #df_small = df_small_Oxy.append(df_small_LARC)
@@ -77,4 +101,4 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
 
 #uf.plot_pixel_distribution(df_small_Oxy)
 
-#uf.create_folder('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore', 'Oxytarget')
+#uf.create_folder('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated', '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MHZScore', 'Oxytarget')
