@@ -136,6 +136,35 @@ def load_t2w_LARC(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray
 
     return images, masks
 
+def load_mix_Oxy(subject:int, downsample:int=1) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Load the images and mask for a T2W scan folder.
+    """
+
+    image_names = [subject / f"T2.nii"] + [subject / f"b4.nii"]
+    #mask_names = ["Manual_an.nii"]
+    mask_names_1 = ["Manual_an.nii"]
+    mask_names_2 = ["Manual_shh.nii"]
+
+    images = np.stack([load_nii(image_name).T[:,::downsample, ::downsample]
+                       for image_name in image_names], axis=-1)
+
+
+    path = subject / mask_names_2[0]
+    if path.exists():
+        masks = np.stack([load_nii(subject / mask_name).T[:, ::downsample, ::downsample]
+                           for mask_name in mask_names_2], axis=-1)
+        print(path)
+    else:
+        masks = np.stack([load_nii(subject / mask_name).T[:, ::downsample, ::downsample]
+                           for mask_name in mask_names_1], axis=-1)
+        print(subject / mask_names_1[0])
+    #masks = np.stack([load_nii(subject / mask_name).T[:,::downsample, ::downsample]
+    #                   for mask_name in mask_names], axis=-1)
+
+    return images, masks
+
+
 
 
 def populate_initial_dataset(data:np.ndarray, h5:h5py.Group, dataset_name:str)->h5py.Dataset:
@@ -213,6 +242,35 @@ def generate_fold_group(
         print(patient)
         if str(patient).endswith('PRE'):
             images, masks = load_t2w_Oxy(patient)
+            patient_id = get_patient_id_Oxy(patient)
+            patient_id = np.ones(images.shape[0])*patient_id
+        else:
+            images, masks = load_t2w_LARC(patient)
+            patient_id = get_patient_id_LARC(patient)
+            patient_id = np.ones(images.shape[0]) * patient_id
+
+        if input_dataset is None:
+            input_dataset = populate_initial_dataset(images, group,"input")
+            mask_dataset = populate_initial_dataset(masks, group, "target_an")
+            patient_ids = populate_initial_dataset(patient_id, group, "patient_ids")
+        else:
+            input_dataset = extend_dataset(input_dataset, images)
+            mask_dataset = extend_dataset(mask_dataset, masks)
+            patient_ids = extend_dataset(patient_ids, patient_id)
+
+
+def generate_fold_group_mix(
+        group:h5py.Group, patient_folders:Iterable[Path])->None:
+    """
+    Generate dataset for a single fold.
+    """
+    input_dataset = None
+    mask_dataset = None
+    patient_ids = None
+    for patient in tqdm(patient_folders):
+        print(patient)
+        if str(patient).endswith('PRE'):
+            images, masks = load_mix_Oxy(patient)
             patient_id = get_patient_id_Oxy(patient)
             patient_id = np.ones(images.shape[0])*patient_id
         else:
@@ -460,19 +518,78 @@ def generate_hdf5_file_LARC_Oxy(folds1:Dict[str, List[Set[int]]],folds2:Dict[str
                             fold = sorted(patient_iter_LARC(data_path2, dimension_list))
                             generate_fold_group(sub_group, fold)
 
+def generate_hdf5_file_Oxy_mix(folds:Dict[str, List[Set[int]]], destination_path:str, out_name:str, data_path_Oxy:Path, data_path_LARC:Path, val=None, k_fold=False, overwrite=False)->DefaultDict[str,List[str]]:
+    """
+    Generate a HDF5 file based on dataset splits.
 
-splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_dict.txt')
+    fold_names is a dictionary that maps the split names to a list of folds names in each split.
+    """
+
+    fold_names = defaultdict(list)
+
+    #out_file = data_path / out_name
+    out_file = destination_path / out_name
+    if not overwrite and out_file.is_file():
+        raise RuntimeError("File exists")
+
+    if not k_fold:
+        print('Running train, val and test mode')
+
+        with h5py.File(out_file, "w") as h5:
+            for split in folds:  # split is usually train, test or val
+                print(split)
+                split_group = h5.create_group(split)
+                for dimension in folds[split]:
+                    for dimension_list in folds[split][dimension]:
+                        foldname = dimension
+                        print(foldname)
+
+                        # Update h5py
+                        sub_group = split_group.create_group(foldname)
+                        fold_names[split].append(foldname)
+
+                        if split=='val' and val=='LARC':
+                            fold = sorted(patient_iter_LARC(data_path_LARC, dimension_list))
+                        else:
+                            fold = sorted(patient_iter_Oxy(data_path_Oxy, dimension_list))
+
+                        generate_fold_group_mix(sub_group, fold)
+
+    else:
+        print('Running k-fold mode')
+        fold_num = 0
+        with h5py.File(out_file, "w") as h5:
+            for fold_number in folds:
+                print(fold_number)
+                fold_group = h5.create_group(fold_number)
+                for split in folds[fold_number]: #split is usually train, test or val
+                    for split_list in folds[fold_number][split]:
+                        foldname = split
+                        print(foldname)
+                        fold_num += 1
+
+                        #Update h5py
+                        sub_group = fold_group.create_group(foldname)
+                        fold_names[split].append(foldname)
+                        fold = sorted(patient_iter_Oxy(data_path_Oxy, split_list))
+                        generate_fold_group(sub_group, fold)
+
+    return fold_names
+
+
+splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_DWI_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
 splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated')
 data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHZScoreOnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS'), out_name='traditionalSplit_Oxy_TS.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore'), out_name='traditionalSplit_Oxy_TS_MHZScore.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_TS.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_TS_MHZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated'), out_name='traditionalSplit_Oxy_Mix_T2_TS_ZScore.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=True)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='KFoldSplit_5splits_LARC.h5', data_path=data_path_LARC, k_fold=True, overwrite=True)
@@ -516,7 +633,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/traditionalSplit_Oxy_TS_ZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5', k_fold=True)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_Oxy_ZScoreNorm.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Mix_T2_TS_MHZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore_TS.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/merge_images.h5', k_fold=False)
 
