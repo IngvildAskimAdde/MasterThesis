@@ -20,10 +20,10 @@ import second_delineation as sd
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5'
 #uf.plot_image_slice(path1, indice=350)
 
-image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/Oxytarget_32_PRE/T2.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_ZScore/Oxytarget_32_PRE/Manual_an.nii'
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_97_PRE/b4.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_97_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
-uf.plot_slice_nifti(image_path_1, 8)
+#uf.plot_slice_nifti(image_path_1, 3)
 
 
 image_1 = sitk.ReadImage(image_path_1)
@@ -36,8 +36,8 @@ v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
-image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_32_PRE/T2.nii'
-mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_32_PRE/Manual_an.nii'
+image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/b4.nii'
+mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image_2 = sitk.ReadImage(image_path_2)
