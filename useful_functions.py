@@ -59,6 +59,30 @@ def create_dst_paths(dst_main_folder):
 
     return dst_list
 
+def dwi_path(patientPaths):
+    """
+    Creates dictionary with paths to dwi, t2 and mask
+    :param patientPaths: list of paths to patient folder with the images
+    :return: dictionary with paths
+    """
+    mask_paths = []
+    t2_paths = []
+    dwi = {'b0':[], 'b1':[], 'b2':[], 'b3':[], 'b4':[], 'b5':[], 'b6':[], }
+
+    for patient in patientPaths:
+        for b in dwi.keys():
+            path = patient + '/' + b + '.nii'
+            dwi[b].append(path)
+
+        mask_paths.append(patient + '/Manual_an.nii')
+        t2_paths.append(patient + '/T2.nii')
+
+    dwi['T2'] = t2_paths
+    dwi['mask'] = mask_paths
+
+
+    return dwi
+
 
 ####### Get data functions ##################################
 def get_array_from_image(path):
@@ -313,13 +337,17 @@ def plot_matched_images(source_image_path, reference_image_path, matched_image_p
     plt.tight_layout()
     plt.show()
 
-def plot_slice_nifti(path1, slice):
+def plot_slice_nifti(path1, slice, mask1=None):
 
     image = sitk.ReadImage(path1)
     image_array = sitk.GetArrayFromImage(image)
 
     plt.figure(figsize=(11,8))
     plt.imshow(image_array[slice], cmap='gray')
+    if mask1:
+        mask = sitk.ReadImage(mask1)
+        mask_array = sitk.GetArrayFromImage(mask)
+        plt.contour(mask_array[slice])
     plt.colorbar()
     plt.axis('off')
     plt.tight_layout()
