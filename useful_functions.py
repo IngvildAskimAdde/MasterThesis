@@ -344,11 +344,11 @@ def plot_slice_nifti(path1, slice, mask1=None):
 
     plt.figure(figsize=(11,8))
     plt.imshow(image_array[slice], cmap='gray')
+    plt.colorbar()
     if mask1:
         mask = sitk.ReadImage(mask1)
         mask_array = sitk.GetArrayFromImage(mask)
-        plt.contour(mask_array[slice])
-    plt.colorbar()
+        plt.contour(mask_array[slice], levels=[0.5], linewidths=2.5, colors='gold')
     plt.axis('off')
     plt.tight_layout()
     plt.show()
@@ -515,9 +515,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['01/x'][indice]
-    mask_1 = predicted_file['01/y'][indice]
-    predicted_mask = predicted_file['01/predicted'][indice]
+    input_data = predicted_file['x'][indice]
+    mask_1 = predicted_file['y'][indice]
+    predicted_mask = predicted_file['predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
@@ -553,7 +553,7 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
         plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
         plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
-        plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+        #plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
         plt.axis('off')
         plt.tight_layout()
         plt.show()
