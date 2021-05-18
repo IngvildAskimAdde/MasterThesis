@@ -633,7 +633,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5', k_fold=True)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Combined_TS.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_TS.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore_TS.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/merge_images.h5', k_fold=False)
 
@@ -641,7 +641,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
 #print_detail('/Volumes/HARDDISK/MasterThesis/LARC_cropped/KFoldSplit_5splits_LARC.h5', k_fold=True)
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_LARC_Oxy.h5', k_fold=True)
 
-print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_23_new/prediction.031.h5', k_fold=False)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_23_new/prediction.031.h5', k_fold=False)
 
 #visulize_images('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_new.h5',66 ,100)
 
