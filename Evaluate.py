@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import  matplotlib
 
-ID = '35_new'
+ID = '28_new'
 folder_name = 'Combined_new'
 dataset = 'Combined'
 
@@ -13,24 +13,24 @@ Oxy = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_I
 #Oxy_ID_8_new = pd.read_csv('/Users/ingvildaskimadde/Desktop/Oxy_ID_8_new/logs.csv')
 #Combined = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_' + ID + '/logs.csv')
 
-Oxy_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_' + ID + '/patient_test.csv')
-Oxy_slice = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_' + ID + '/slice_test.csv')
-#slice_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/slice_352.csv')
-#slice_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/slice_256.csv')
+#Oxy_patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_' + ID + '/patient_test.csv')
+#Oxy_slice = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_' + ID + '/slice_test.csv')
+#slice_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/slice_test_352.csv')
+#slice_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/slice_test_256.csv')
 #slice = slice_352.append(slice_256)
 
-#patient = pd.read_csv('/Users/ingvild/Documents/MasterThesis/Experiments/LARC_ID_52/patient.csv')
+patient = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/external_test_testLARC_352/result.csv')
 #slice = pd.read_csv('/Users/ingvild/Documents/MasterThesis/Experiments/LARC_ID_52/slice.csv')
 
-#patient_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/patient_352.csv')
-#patient_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/patient_256.csv')
+#patient_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/patient_test_352.csv')
+#patient_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/' + folder_name + '/' + dataset + '_ID_' + ID + '/patient_test_256.csv')
 #patient = patient_352.append(patient_256)
 
-#patient_LARC_1 = patient.reset_index(drop=True)[:10]
-#patient_LARC_2 = patient.reset_index(drop=True)[26:]
+#patient_LARC_1 = patient.reset_index(drop=True)[:12]
+#patient_LARC_2 = patient.reset_index(drop=True)[29:]
 #patient_LARC = patient_LARC_1.append(patient_LARC_2)
 
-#patient_Oxy = patient.reset_index(drop=True)[10:26]
+#patient_Oxy = patient.reset_index(drop=True)[12:29]
 #dataframes = [data_valfold1, data_valfold2, data_valfold3, data_valfold4, data_valfold5]
 
 def create_dataframe(dataframes_list, colname, maxsize_of_dataframe):
@@ -109,7 +109,7 @@ def get_data(dataframe, column):
 
 #max_dice, epoch = find_best_epoch(Combined_ID_9)
 max_dice, epoch = find_best_epoch(Oxy)
-mean, median = get_data(Oxy_patient, 'f1_score')
+mean, median = get_data(patient, 'f1_score')
 #mean = get_data(LARC_ID_10_slice, 'f1_score')
 
 

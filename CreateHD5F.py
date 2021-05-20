@@ -602,10 +602,11 @@ def print_detail(filename, k_fold=False):
         with h5py.File(filename, 'r') as f:
             for group in f.keys():
                 print(group)
-                for ds_name in f[group].keys():
-                    print('--', ds_name, f[group][ds_name].shape)
-                    if ds_name == 'patient_ids':
-                        print('---->', np.unique(f[group][ds_name]))
+                print(f[group])
+                #for ds_name in f[group].keys():
+                #    print('--', ds_name, f[group][ds_name].shape)
+                #    if ds_name == 'patient_ids':
+                #        print('---->', np.unique(f[group][ds_name]))
 
     else:
         with h5py.File(filename, 'r') as f:
@@ -632,9 +633,9 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.show()
 
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/test/prediction_test.h5', k_fold=False)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_MatchedHistZScore.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_TS_MHZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Mix_TS.h5', k_fold=True)
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore_TS.h5', k_fold=True)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/external_test_valLARC_352/test/prediction_test.h5', k_fold=False)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/merge_images.h5', k_fold=False)
 
 #print_detail('/Volumes/HARDDISK/MasterThesis/Oxy_cropped/KFoldSplit_5splits_Oxy.h5', k_fold=True)
