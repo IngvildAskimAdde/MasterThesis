@@ -21,11 +21,13 @@ import second_delineation as sd
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5'
 #uf.plot_image_slice(path1, indice=350)
 
-image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_174_PRE/b5.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_174_PRE/Manual_an.nii'
+#image_path_1 = '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-075/MRS1/image.nii'
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/image.nii'
+#mask_path_1 = '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-075/MRS1/1 RTSTRUCT LARC_MRS1-label.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/1 RTSTRUCT LARC_MRS1-label.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
-uf.plot_slice_nifti(image_path_1, 8, mask_path_1)
-"""
+uf.plot_slice_nifti(image_path_1, 20, mask_path_1)
+
 
 image_1 = sitk.ReadImage(image_path_1)
 mask_1 = sitk.ReadImage(mask_path_1)
@@ -37,6 +39,7 @@ v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
+"""
 image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/b4.nii'
 mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'

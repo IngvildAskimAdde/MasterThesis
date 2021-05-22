@@ -349,6 +349,7 @@ def plot_slice_nifti(path1, slice, mask1=None):
         mask = sitk.ReadImage(mask1)
         mask_array = sitk.GetArrayFromImage(mask)
         plt.contour(mask_array[slice], levels=[0.5], linewidths=2.5, colors='gold')
+        plt.contourf(mask_array[slice], levels=[0.5, 1.0], alpha=0.2, colors='gold')
     plt.axis('off')
     plt.tight_layout()
     plt.show()

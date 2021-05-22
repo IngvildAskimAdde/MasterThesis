@@ -577,19 +577,19 @@ def generate_hdf5_file_Oxy_mix(folds:Dict[str, List[Set[int]]], destination_path
     return fold_names
 
 
-splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_DWI_dict.txt')
+splits_Oxy = read_dictionary('./Textfiles/Oxy_tradSplit_patients_Delineation2_dict.txt')
 splits_ids_Oxy = get_patient_id_from_dict(splits_Oxy)
 
 splits_LARC = read_dictionary('./Textfiles/LARC_tradSplit_patients_dict.txt')
 splits_ids_LARC = get_patient_id_from_dict(splits_LARC)
 
-data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated')
+data_path_Oxy = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped')
 data_path_LARC = Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_MHZScoreOnOxy')
 
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_cropped_TS_MHZScore'), out_name='traditionalSplit_Oxy_TS_MHZScore.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
+#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped'), out_name='traditionalSplit_Oxy_Delineation2.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='traditionalSplit_LARC_TS.h5', data_path_LARC=data_path_LARC, data_path_Oxy=data_path_Oxy, k_fold=False, overwrite=False)
 #generate_hdf5_file_LARC_Oxy(splits_ids_Oxy, splits_ids_LARC, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild'), out_name='traditionalSplit_Combined_TS_MHZScore.h5', data_path1=data_path_Oxy, data_path2=data_path_LARC, k_fold=False, overwrite=False)
-#generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated'), out_name='traditionalSplit_Oxy_Mix_T2_TS_ZScore.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=True)
+#generate_hdf5_file_Oxy_mix(splits_ids_Oxy, destination_path=Path(r'/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped'), out_name='traditionalSplit_Oxy_Mix.h5', data_path_Oxy=data_path_Oxy, data_path_LARC=data_path_LARC, k_fold=False, overwrite=False)
 
 #generate_hdf5_file_Oxy(splits_ids_Oxy, destination_path=Path(r'/Volumes/HARDDISK/MasterThesis/Oxy_cropped'), out_name='KFoldSplit_5splits_Oxy.h5', data_path=data_path_Oxy, k_fold=True, overwrite=True)
 #generate_hdf5_file_LARC(splits_ids_LARC, out_name='KFoldSplit_5splits_LARC.h5', data_path=data_path_LARC, k_fold=True, overwrite=True)
@@ -602,11 +602,11 @@ def print_detail(filename, k_fold=False):
         with h5py.File(filename, 'r') as f:
             for group in f.keys():
                 print(group)
-                print(f[group])
-                #for ds_name in f[group].keys():
-                #    print('--', ds_name, f[group][ds_name].shape)
-                #    if ds_name == 'patient_ids':
-                #        print('---->', np.unique(f[group][ds_name]))
+                #print(f[group])
+                for ds_name in f[group].keys():
+                    print('--', ds_name, f[group][ds_name].shape)
+                    if ds_name == 'patient_ids':
+                        print('---->', np.unique(f[group][ds_name]))
 
     else:
         with h5py.File(filename, 'r') as f:
@@ -632,7 +632,7 @@ def visulize_images(path_to_file, start_slice, end_slice):
     plt.contour(masks[0][..., 0], 1, levels=[0.5], colors='yellow')
     plt.show()
 
-#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/test/prediction_test.h5', k_fold=False)
+#print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Delineation2.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_TS_MHZScore.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Mix_TS.h5', k_fold=True)
 #print_detail('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/external_test_valLARC_352/test/prediction_test.h5', k_fold=False)
