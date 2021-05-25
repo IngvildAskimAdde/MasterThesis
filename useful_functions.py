@@ -574,3 +574,18 @@ def show_dwi_image(image_path, slice_number, mask_path=None):
     plt.colorbar()
     plt.axis('off')
     plt.show()
+
+def plot_train_performance(dataframe):
+    """
+    Plots the training performance (loss and dice) of an experiment
+    :param dataframe: dataframe containing the logs.csv file obtained after training
+    :return: plot of training performance
+    """
+
+    plt.figure(figsize=(11,9))
+    plt.plot(dataframe['epoch'],dataframe['loss'], label='Loss', color='k')
+    plt.plot(dataframe['epoch'], dataframe['dice'], '--', label='DSC', color='k')
+    plt.xlabel('Epochs')
+    plt.ylabel(' ')
+    plt.legend()
+    plt.show()

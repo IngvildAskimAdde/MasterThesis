@@ -9,7 +9,7 @@ import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
 
-
+"""
 #path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_53/prediction.039.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
 #uf.plot_image_slice(path1, indice=4)
@@ -39,7 +39,7 @@ v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
-"""
+
 image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/b4.nii'
 mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
@@ -379,6 +379,8 @@ def main_valfolds_2():
 #df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/slice.csv')
 #df = uf.max_and_min_dsc_score(df)
 
+#df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_54/logs.csv')
+#uf.plot_train_performance(df)
 
 
 
