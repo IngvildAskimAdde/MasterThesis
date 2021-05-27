@@ -423,6 +423,10 @@ def plot_learning_rates(dictionary, x_labels, color=None, markers=None):
     """
     count = 0
     plt.figure(figsize=(11,8))
+
+    # draw solid white grid lines
+    plt.grid(color='k', alpha=0.2, fillstyle='left', axis='y', linestyle='solid')
+
     for key in dictionary:
         plt.scatter(x_labels, dictionary[key], color=color, marker=markers[count], facecolors='none', s=200, linewidths=2)
         count += 1
@@ -436,7 +440,8 @@ def plot_learning_rates(dictionary, x_labels, color=None, markers=None):
 
     plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
-    plt.ylim(-0.05, 1.05)
+    plt.ylim(-0.0, 1.0)
+    plt.xticks(rotation=10)
     plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
@@ -453,6 +458,10 @@ def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
     """
     count = 0
     plt.figure(figsize=(11,8))
+
+    # draw solid white grid lines
+    plt.grid(color='k', alpha=0.2, fillstyle='left', axis='y', linestyle='solid')
+
     for key in dictionary:
         plt.scatter(x_labels, dictionary[key], color=color, marker=markers[count], facecolors='none', s=200, linewidths=2)
         count += 1
@@ -464,8 +473,9 @@ def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
 
     plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
-    plt.ylim(-0.05, 1.05)
-    plt.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
+    plt.ylim(-0.0, 1.0)
+    plt.xticks(rotation=10)
+    plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
 
@@ -481,9 +491,13 @@ def scatter_plot_masks(dsc1, dsc2,  dsc3, patient_ids, color=None, markers=None)
     """
 
     plt.figure(figsize=(11,8))
-    plt.scatter(patient_ids, dsc1, color=color, marker=markers[0], facecolors='none', s=200, linewidths=2)
-    plt.scatter(patient_ids, dsc2, color=color, marker=markers[1], facecolors='none', s=200, linewidths=2)
-    plt.scatter(patient_ids, dsc3, color=color, marker=markers[2], facecolors='none', s=200, linewidths=2)
+
+    # draw solid white grid lines
+    plt.grid(color='k', alpha=0.2, fillstyle='left', axis='y', linestyle='solid')
+
+    plt.scatter(patient_ids, dsc1, color=color, marker=markers[0], facecolors='none', s=300, linewidths=2)
+    plt.scatter(patient_ids, dsc2, color=color, marker=markers[1], facecolors='none', s=300, linewidths=2)
+    plt.scatter(patient_ids, dsc3, color=color, marker=markers[2], facecolors='none', s=300, linewidths=2)
 
 
     legend_elements = [Line2D([0], [0], marker='^', color='k', label='Radiologist$_{\mathrm{O}}^{\mathrm{1}}}$',
@@ -496,7 +510,7 @@ def scatter_plot_masks(dsc1, dsc2,  dsc3, patient_ids, color=None, markers=None)
 
     plt.ylabel(r'DSC$_{\mathrm{P}}$')
     plt.xlabel('Patient IDs')
-    plt.ylim(-0.05, 1.05)
+    plt.ylim(-0.0, 1.0)
     plt.legend(handles=legend_elements)#, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=3)
     plt.tight_layout()
     plt.show()
@@ -516,9 +530,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['x'][indice]
-    mask_1 = predicted_file['y'][indice]
-    predicted_mask = predicted_file['predicted'][indice]
+    input_data = predicted_file['00/x'][indice]
+    mask_1 = predicted_file['00/y'][indice]
+    predicted_mask = predicted_file['00/predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
@@ -588,4 +602,46 @@ def plot_train_performance(dataframe):
     plt.xlabel('Epochs')
     plt.ylabel(' ')
     plt.legend()
+    plt.show()
+
+
+def violinplot_version2(dataframe, fontsize, labelsize, title, colnames, colors):
+    """
+    Another type of violin plot. Box more clear.
+
+    :param dataframe:
+    :param fontsize:
+    :param labelsize:
+    :param title:
+    :param colnames:
+    :param colors:
+    :return:
+    """
+
+    fig, ax = plt.subplots(figsize=(11, 8))
+
+    # draw solid white grid lines
+    plt.grid(color='k', alpha=0.2, fillstyle='left', axis='y', linestyle='solid')
+
+    matplotlib.rcParams.update({'font.size': fontsize})
+    matplotlib.rcParams['font.family'] = "serif"
+    matplotlib.rcParams.update({'xtick.labelsize': labelsize})
+
+    for i in range(len(colnames)):
+        parts = ax.violinplot(dataframe[colnames[i]], positions=[i], showmeans=False, showmedians=False,
+                              showextrema=False)
+        for pc in parts['bodies']:
+            pc.set_facecolor(colors[0])
+            pc.set_alpha(0.4)
+
+        ax.boxplot(dataframe[colnames[i]], positions=[i], showmeans=False, meanline=False,
+                   patch_artist=True, boxprops=dict(facecolor=colors[0], color='k'),
+                   medianprops=dict(color='k'), meanprops=dict(color='k'))
+
+    ax.set_xticklabels(colnames)
+
+    plt.xlabel(None)
+    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.title(title)
+    plt.ylim(-0.0, 1.0)
     plt.show()

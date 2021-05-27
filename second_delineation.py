@@ -57,19 +57,20 @@ def interobserver_variations_on_val(main_folder_path, df1, df2):
 
     df3 = pd.DataFrame(dsc_scores, columns=['f1_score'])
 
-    df1['Mask'] = r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}}$'
-    df2['Mask'] = r'Radiologist$_{\mathrm{O}}^{\mathrm{2}}}$'
-    df3['Mask'] = 'Interobserver'
-
     print(np.median(list(df1['f1_score'])))
     print(np.median(list(df2['f1_score'])))
     print(np.median(list(df3['f1_score'])))
 
+    df = pd.DataFrame()
+    df[r'Radiologist$_{\mathrm{O}}^{\mathrm{1}}}$'] = df1['f1_score']
+    df[r'Radiologist$_{\mathrm{O}}^{\mathrm{2}}}$'] = df2['f1_score']
+    df['Interobserver'] = list(df3['f1_score'])
+
     uf.scatter_plot_masks(df1['f1_score'], df2['f1_score'], df3['f1_score'], df1['patient_ids'], color='#9ecae1', markers=['^', 'v', '*'])
 
-    df = pd.concat([df1, df2, df3])
-    df = df.drop(['patient_ids'], axis=1)
-    df = pd.melt(df, id_vars=['Mask'], var_name=['Parameters'])
+    #df = pd.concat([df1, df2, df3])
+    #df = df.drop(['patient_ids'], axis=1)
+    #df = pd.melt(df, id_vars=['Mask'], var_name=['Parameters'])
 
     return df
 
@@ -105,11 +106,13 @@ def interobserver_variations_allPatients(main_folder_path):
 
 if __name__ == '__main__':
 
-    df1, df2 = correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/patient.csv', '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/patient_mask2.csv')
-    #interobserver_dsc = interobserver_variations_allPatients('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped')
-    df = interobserver_variations_on_val('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped', df1, df2)
+    df1, df2 = correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/patient.csv', '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/mask2/patient.csv')
+    interobserver_dsc = interobserver_variations_allPatients('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped')
+    df = interobserver_variations_on_val('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped', df1, df2)
     colors_Oxy = ['#9ecae1']
-    uf.violinplot(df, 20, 20, '', colors_Oxy)
+    colnames = list(df.columns)
+
+    #uf.violinplot_version2(df, 20, 20, '', colnames, colors_Oxy)
 
     #uf.show_image_interactive('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped/Oxytarget_110_PRE/T2.nii', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped/Oxytarget_110_PRE/Manual_an.nii', '2')
     #uf.show_image_interactive('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped/Oxytarget_110_PRE/T2.nii', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_secondDelineationPatients_cropped/Oxytarget_110_PRE/Manual_shh.nii', '2')

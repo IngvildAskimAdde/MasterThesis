@@ -254,12 +254,12 @@ def main_lr():
     #markers = ['o', 's', '^']
     markers = ['X', 'D']
     print(medians)
-    print(np.mean(medians['Dice']))
-    print(np.mean(medians['Modified Dice']))
+    #print(np.mean(medians['Dice']))
+    #print(np.mean(medians['Modified Dice']))
 
     uf.plot_loss_functions(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
 
-#main_lr()
+main_lr()
 
 
 def main_val():
@@ -368,16 +368,16 @@ def main_valfolds_2():
                       # 20, 2)
 #uf.plot_slice_nifti(path_LARC_new, 20)
 
-#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/prediction.041.h5'
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/prediction.046.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-#uf.plot_image_slice(path1, indice=259)
+uf.plot_image_slice(path1, indice=123)
 
 #df1, df2 = sd.correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/slice.csv','/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/slice_mask2.csv')
-#df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_352.csv')
-#df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Combined_new/Combined_ID_16_new/slice_256.csv')
+df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_352.csv')
+df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_256.csv')
 #df = df_352.append(df_256, ignore_index=True)
-#df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_28_new/slice.csv')
-#df = uf.max_and_min_dsc_score(df)
+#df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/slice.csv')
+df = uf.max_and_min_dsc_score(df_352)
 
 #df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_54/logs.csv')
 #uf.plot_train_performance(df)
