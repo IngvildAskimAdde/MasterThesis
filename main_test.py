@@ -9,7 +9,7 @@ import pandas as pd
 from matplotlib.lines import Line2D
 import second_delineation as sd
 
-"""
+
 #path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_53/prediction.039.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
 #uf.plot_image_slice(path1, indice=4)
@@ -17,31 +17,33 @@ import second_delineation as sd
 #image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
 #mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
 
-#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_43/prediction.044.h5'
-#path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_LARC_352_MHZScore.h5'
-#uf.plot_image_slice(path1, indice=350)
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_19_new/prediction.095.h5'
+path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Delineation2.h5'
+uf.plot_image_slice(path1, 71, path2)
+#slice 32 or 31?
 
-#image_path_1 = '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-075/MRS1/image.nii'
-image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/image.nii'
-#mask_path_1 = '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-075/MRS1/1 RTSTRUCT LARC_MRS1-label.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/1 RTSTRUCT LARC_MRS1-label.nii'
-#mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
-uf.plot_slice_nifti(image_path_1, 20, mask_path_1)
+#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-019/image.nii'
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_122_PRE/T2.nii'
+#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-019/1 RTSTRUCT LARC_MRS1-label.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_122_PRE/Manual_an.nii'
+#mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii
+#uf.plot_slice_nifti(image_path_1, 6, mask_path_1)
 
 
 image_1 = sitk.ReadImage(image_path_1)
 mask_1 = sitk.ReadImage(mask_path_1)
 #mask_2 = sitk.ReadImage(mask_path_2)
 
-v = iv.Viewer(view_mode='2', mask_to_show=['a','b'])
+v = iv.Viewer(view_mode='2', mask_to_show=['a', 'b'])
 v.set_image(image_1, label='image')
 v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
+"""
 
-image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/b4.nii'
-mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS/Oxytarget_97_PRE/Manual_an.nii'
+image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_MatchedHistZScore/Oxytarget_41_PRE/T2.nii'
+mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_MatchedHistZScore/Oxytarget_41_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii'
 
 image_2 = sitk.ReadImage(image_path_2)
@@ -368,16 +370,16 @@ def main_valfolds_2():
                       # 20, 2)
 #uf.plot_slice_nifti(path_LARC_new, 20)
 
-path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/prediction.046.h5'
+#path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/prediction.046.h5'
 #path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_MatchedHistZScore_twoMasks.h5'
-uf.plot_image_slice(path1, indice=123)
+#uf.plot_image_slice(path1, indice=123)
 
 #df1, df2 = sd.correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/slice.csv','/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_24_new/mask2/slice_mask2.csv')
-df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_352.csv')
-df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_256.csv')
+#df_352 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_352.csv')
+#df_256 = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_37/slice_256.csv')
 #df = df_352.append(df_256, ignore_index=True)
 #df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/slice.csv')
-df = uf.max_and_min_dsc_score(df_352)
+#df = uf.max_and_min_dsc_score(df_352)
 
 #df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_54/logs.csv')
 #uf.plot_train_performance(df)

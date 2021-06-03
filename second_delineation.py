@@ -41,7 +41,7 @@ def interobserver_variations_on_val(main_folder_path, df1, df2):
     :param main_folder_path: path to folder with patients which has two delineations
     :return: list of dsc scores for each patient and median value
     """
-    val_patients = ['OxyTarget_124_PRE', 'OxyTarget_115_PRE', 'OxyTarget_133_PRE', 'OxyTarget_43_PRE', 'OxyTarget_138_PRE', 'OxyTarget_122_PRE', 'OxyTarget_61_PRE', 'OxyTarget_163_PRE', 'OxyTarget_184_PRE', 'OxyTarget_121_PRE', 'OxyTarget_164_PRE']
+    val_patients = ['OxyTarget_115_PRE', 'OxyTarget_121_PRE', 'OxyTarget_122_PRE', 'OxyTarget_124_PRE', 'OxyTarget_133_PRE', 'OxyTarget_138_PRE', 'OxyTarget_163_PRE', 'OxyTarget_164_PRE', 'OxyTarget_184_PRE', 'OxyTarget_43_PRE',  'OxyTarget_61_PRE']
     dsc_scores = []
 
     for i in val_patients:
@@ -53,6 +53,7 @@ def interobserver_variations_on_val(main_folder_path, df1, df2):
         mask2 = sitk.ReadImage(paths_mask2)
 
         dsc = uf.calculate_dice(mask1, mask2)
+        print(paths_mask1, dsc)
         dsc_scores.append(dsc)
 
     df3 = pd.DataFrame(dsc_scores, columns=['f1_score'])
@@ -102,15 +103,19 @@ def interobserver_variations_allPatients(main_folder_path):
         dsc_scores.append(dsc)
 
     print(np.median(dsc_scores))
-    return dsc_scores
+
+    df = pd.DataFrame([Oxy_maskPaths1_new, Oxy_maskPaths2_new, dsc_scores]).T
+
+    return df
 
 if __name__ == '__main__':
 
     df1, df2 = correct_patients_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/patient.csv', '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/mask2/patient.csv')
     interobserver_dsc = interobserver_variations_allPatients('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped')
+    print(min(interobserver_dsc))
     df = interobserver_variations_on_val('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped', df1, df2)
-    colors_Oxy = ['#9ecae1']
-    colnames = list(df.columns)
+    #colors_Oxy = ['#9ecae1']
+    #colnames = list(df.columns)
 
     #uf.violinplot_version2(df, 20, 20, '', colnames, colors_Oxy)
 
