@@ -17,15 +17,15 @@ import second_delineation as sd
 #image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
 #mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
 
-path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_19_new/prediction.095.h5'
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_62/test/prediction_test.h5'
 path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Delineation2.h5'
-uf.plot_image_slice(path1, 71, path2)
-#slice 32 or 31?
+uf.plot_image_slice(path1, 87)
 
-#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-019/image.nii'
-image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_122_PRE/T2.nii'
-#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-019/1 RTSTRUCT LARC_MRS1-label.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_122_PRE/Manual_an.nii'
+
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-079/image.nii'
+#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_49_PRE/T2.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-079/1 RTSTRUCT LARC_MRS1-label.nii'
+#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_49_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii
 #uf.plot_slice_nifti(image_path_1, 6, mask_path_1)
 
