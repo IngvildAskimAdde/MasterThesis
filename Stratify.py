@@ -58,9 +58,9 @@ def plot_distribution(category, title):
     #width = 0.10
     xloc = FixedLocator(x)
 
-    matplotlib.rcParams.update({'font.size': 25})
+    matplotlib.rcParams.update({'font.size': 28})
     matplotlib.rcParams['font.family'] = "serif"
-    matplotlib.rcParams.update({'xtick.labelsize': 20})
+    matplotlib.rcParams.update({'xtick.labelsize': 25})
 
     fig = plt.figure(figsize=(11,8))
     ax = fig.gca()
@@ -356,7 +356,7 @@ val_cat = np.append(val_catOxy, val_catLARC)
 
 test = np.append(testOxy, testLARC)
 test_cat = np.append(test_catOxy, test_catLARC)
-"""
+
 ####### PLOT AND PRINT TRAIN, VALIDATION AND TEST ################
 plot_distribution(category, r'Total dataset')
 plot_distribution(train_cat, r'Training set')
@@ -367,7 +367,7 @@ print(np.sort(train))
 print(np.sort(val))
 print(np.sort(test))
 
-
+"""
 ####### PLOT AND PRINT K-FOLDS ##################################
 plot_distribution(trainVal_category_Oxy, r'Total dataset')
 plot_distribution(cat_folds_Oxy[0], r'Total dataset')
@@ -396,7 +396,7 @@ print('Validation:', np.sort(kfold_patients_Oxy['Fold4']['Validation4']))
 print('Fold5:')
 print('Train:', np.sort(kfold_patients_Oxy['Fold5']['Train5']))
 print('Validation:', np.sort(kfold_patients_Oxy['Fold5']['Validation5']))
-"""
+
 
 #kfold_patients_Oxy = convert_kFoldDictArray_to_set(kfold_patients_Oxy)
 
@@ -423,7 +423,7 @@ f = open("Textfiles/LARC_Oxy_tradSplit_patients_dict_352.txt", "w")
 f.write(str(tradSplit_patients_LARC_Oxy_352))
 f.close()
 
-"""
+
 f = open("LARC_Oxy_tradSplit_category.txt","w")
 f.write('Total set:')
 f.write(str(category))

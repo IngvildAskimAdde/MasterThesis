@@ -5,7 +5,11 @@ from medvis import apply_cmap_with_blend
 from deoxys_image import affine_transform
 from deoxys_image import point_operation
 from deoxys_image import filters
+import matplotlib
 
+matplotlib.rcParams.update({'font.size': 35})
+matplotlib.rcParams['font.family'] = "serif"
+matplotlib.rcParams.update({'xtick.labelsize': 26})
 
 def get_images_and_targets(filepath, indice):
     """
@@ -125,9 +129,9 @@ images, targets = get_images_and_targets(path, indice)
 #blur(images, targets, blur_value=1.5, channel=None)
 #zoom(images, targets, zoom=1.5)
 #shift(images, targets, shift_range=[10,10])
-brightness(images, targets, brightness_factor=1.2, channel=None)
+#brightness(images, targets, brightness_factor=1.2, channel=None)
 #contrast(images, targets, contrast_factor=0.7, channel=None)
-#noise(images, targets, noise_var=0.05, channel=None)
+noise(images, targets, noise_var=0.05, channel=None)
 
 
 file = h5py.File(path,'r')

@@ -150,13 +150,18 @@ def remove_nonTumor_slices(dataframe):
 
         #Create image and mask object from file path
         image = sitk.ReadImage(dataframe['imagePaths'][i])
-        mask = sitk.ReadImage(dataframe['maskPaths'][i])
+        mask_an = sitk.ReadImage(dataframe['maskPaths'][i])
+
+        path_shh = dataframe['patientPaths'][i] + '/Manual_shh.nii'
+        print(path_shh)
+        mask_shh = sitk.ReadImage(path_shh)
         print(dataframe['imagePaths'][i])
         print(dataframe['maskPaths'][i])
 
         #Create image and mask as arrays
         image_array = sitk.GetArrayFromImage(image)
-        mask_array = sitk.GetArrayFromImage(mask)
+        mask_array_an = sitk.GetArrayFromImage(mask_an)
+        mask_array_shh = sitk.GetArrayFromImage(mask_shh)
         slices = image.GetSize()[2] #Number of slices for the given patient
 
         tumor_slices = []
@@ -164,33 +169,37 @@ def remove_nonTumor_slices(dataframe):
         #Iterate through all the image slices for a patient
         for j in range(slices):
             #If the slice contains tumor then save the slice index in the tumor_slices list
-            if 1 in mask_array[j][:][:]:
+            if 1 in mask_array_an[j][:][:]:
                 if dataframe['ID'][i] == 'LARC-RRP-033' and j == 10: #Do not include this slice (noise from radiologist)
                     break
                 else:
                     tumor_slices.append(j)
 
         #Get the x- and y-dimensions of the images and masks
-        x_dim = int(mask_array.shape[1])
-        y_dim = int(mask_array.shape[2])
+        x_dim = int(mask_array_an.shape[1])
+        y_dim = int(mask_array_an.shape[2])
 
         #Create new image and mask arrays with the shape of the original image and mask objects, and with
         #the same number of slices as saved in tumor_slices list
-        new_mask_array = np.zeros((len(tumor_slices), x_dim, y_dim))
+        new_mask_array_an = np.zeros((len(tumor_slices), x_dim, y_dim))
+        new_mask_array_shh = np.zeros((len(tumor_slices), x_dim, y_dim))
         new_image_array = np.zeros((len(tumor_slices), x_dim, y_dim))
 
         #Save the new images and masks as the original images and masks with tumor
         for k in range(len(tumor_slices)):
-            new_mask_array[k][:][:] = mask_array[tumor_slices[k]][:][:]
+            new_mask_array_an[k][:][:] = mask_array_an[tumor_slices[k]][:][:]
+            new_mask_array_shh[k][:][:] = mask_array_shh[tumor_slices[k]][:][:]
             new_image_array[k][:][:] = image_array[tumor_slices[k]][:][:]
 
         #Create image and mask from new arrays
-        new_mask = sitk.GetImageFromArray(new_mask_array)
+        new_mask_an = sitk.GetImageFromArray(new_mask_array_an)
+        new_mask_shh = sitk.GetImageFromArray(new_mask_array_shh)
         new_image = sitk.GetImageFromArray(new_image_array)
 
         #Save the new images and masks (only containing tumor) in the destination paths
         sitk.WriteImage(new_image, dataframe['imagePaths'][i])
-        sitk.WriteImage(new_mask, dataframe['maskPaths'][i])
+        sitk.WriteImage(new_mask_an, dataframe['maskPaths'][i])
+        sitk.WriteImage(new_mask_shh, path_shh)
 
 
 def crop_t2_dwi_mask(dataframe, new_dimension, tumor_value, destination_folders_list, image_filename, mask_filename):
@@ -455,8 +464,9 @@ def remove_rotated_dwi(dataframe, dst_folders):
 
 if __name__ == '__main__':
 
-    Oxy_patientPaths, Oxy_patientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_new', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-    Oxy_df = p.dataframe(Oxy_patientPaths, Oxy_patientNames, Oxy_imagePaths, Oxy_maskPaths)
+    #Oxy_patientPaths, Oxy_patientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/TumorSlices/LARC_cropped_TS_new', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+    Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths = gd.get_paths('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped', 'b4', 'an.nii')
+    Oxy_df = p.dataframe(Oxy_patientPaths, Oxy_PatientNames, Oxy_imagePaths, Oxy_maskPaths)
     Oxy_df = p.dimensions(Oxy_df)
 
     #remove_nonTumor_slices(Oxy_df)

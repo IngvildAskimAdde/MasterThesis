@@ -17,15 +17,19 @@ import second_delineation as sd
 #image_path = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/image.nii'
 #mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped/LARC-RRP-022/1 RTSTRUCT LARC_MRS1-label.nii'
 
-path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_62/test/prediction_test.h5'
+path1 = '/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_40_new/prediction.061.h5'
 path2 = '/Volumes/LaCie/MasterThesis_Ingvild/HDF5_data/traditionalSplit_Oxy_Delineation2.h5'
-uf.plot_image_slice(path1, 87)
+uf.plot_image_slice(path1, 74)
 
+#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_corrected/Oxytarget_120_PRE/T2.nii'
+#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-035/1 RTSTRUCT LARC_MRS1-label.nii'
+#uf.plot_slice_nifti(image_path_1, 2)
 
-image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-079/image.nii'
-#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_49_PRE/T2.nii'
-mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-079/1 RTSTRUCT LARC_MRS1-label.nii'
-#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped/Oxytarget_49_PRE/Manual_an.nii'
+"""
+image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/image.nii'
+#image_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_174_PRE/b3.nii'
+mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped/LARC-RRP-075/1 RTSTRUCT LARC_MRS1-label.nii'
+#mask_path_1 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated/Oxytarget_174_PRE/Manual_an.nii'
 #mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy_allData_MatchedHistZScore/Oxytarget_43_PRE/Manual_shh.nii
 #uf.plot_slice_nifti(image_path_1, 6, mask_path_1)
 
@@ -40,7 +44,7 @@ v.set_mask(mask_1, label='mask 1', color_rgb=[60, 180, 75])
 #v.set_mask(mask_2, label='mask 2')
 v.show()
 
-"""
+
 
 image_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_MatchedHistZScore/Oxytarget_41_PRE/T2.nii'
 mask_path_2 = '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_MatchedHistZScore/Oxytarget_41_PRE/Manual_an.nii'
@@ -217,14 +221,13 @@ def main_kfold(sheet_name, LARC=False):
 
 #main_kfold('LARC', True)
 
-
 def main_lr():
     excel_path = '/Volumes/LaCie/MasterThesis_Ingvild/Excel_data/Experiment_plan.xlsx'
 
     # Define correct experiments (IDs)
-    ids_LARC = [5, 8]
-    ids_Oxy = [5, 8]
-    ids_Comb = [0, 3]
+    ids_LARC = [5, 6, 7]
+    ids_Oxy = [5, 6, 7]
+    ids_Comb = [0, 1, 2]
 
     # Creating dataframes of det f1 scores of the validation patients
     Oxy = uf.dataframe_of_f1scores(excel_path, 'Oxy_new', ['patient.csv'], ids_Oxy)
@@ -240,26 +243,26 @@ def main_lr():
 
     for key in dictionary:
         print(key)
-        #dictionary[key] = uf.swap_columns(dictionary[key], '1e-04+Dice', '1e-03+Dice')
+        dictionary[key] = uf.swap_columns(dictionary[key], '1e-04+Dice', '1e-03+Dice')
         for i in range(len(dictionary[key].columns)):
-            dictionary[key].columns.values[i] = col_names_loss[i]
-            if not col_names_loss[i] in medians:
-                medians[col_names_loss[i]] = [dictionary[key].median()[i]]
+            dictionary[key].columns.values[i] = col_names_lr[i]
+            if not col_names_lr[i] in medians:
+                medians[col_names_lr[i]] = [dictionary[key].median()[i]]
             else:
-                medians[col_names_loss[i]].append(list(dictionary[key].median())[i])
+                medians[col_names_lr[i]].append(list(dictionary[key].median())[i])
 
     colors_Oxy = '#9ecae1' # ['#deebf7','#9ecae1','#3182bd']
     colors_LARC = '#fdae6b'  # ['#fee6ce','#fdae6b','#e6550d']
     colors_Comb = '#a1d99b'  # ['#e5f5e0','#a1d99b','#31a354']
 
     colors = [colors_Oxy, colors_LARC, colors_Comb]
-    #markers = ['o', 's', '^']
-    markers = ['X', 'D']
+    markers = ['o', 's', '^']
+    #markers = ['X', 'D']
     print(medians)
     #print(np.mean(medians['Dice']))
     #print(np.mean(medians['Modified Dice']))
 
-    uf.plot_loss_functions(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
+    uf.plot_learning_rates(medians, ['OxyTarget', 'LARC-RRP', 'Combined'], colors, markers)
 
 main_lr()
 
@@ -381,7 +384,7 @@ def main_valfolds_2():
 #df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/Oxy_new/Oxy_ID_26_new/slice.csv')
 #df = uf.max_and_min_dsc_score(df_352)
 
-#df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_54/logs.csv')
+#df = pd.read_csv('/Volumes/LaCie/MasterThesis_Ingvild/Experiments/LARC/LARC_ID_35/logs.csv')
 #uf.plot_train_performance(df)
 
 

@@ -67,7 +67,11 @@ def interobserver_variations_on_val(main_folder_path, df1, df2):
     df[r'Radiologist$_{\mathrm{O}}^{\mathrm{2}}}$'] = df2['f1_score']
     df['Interobserver'] = list(df3['f1_score'])
 
-    uf.scatter_plot_masks(df1['f1_score'], df2['f1_score'], df3['f1_score'], df1['patient_ids'], color='#9ecae1', markers=['^', 'v', '*'])
+    patient_ids = list(df1['patient_ids'])
+    for i in range(len(patient_ids)):
+        patient_ids[i] = patient_ids[i]-1000
+
+    uf.scatter_plot_masks(df1['f1_score'], df2['f1_score'], df3['f1_score'], patient_ids, color='#9ecae1', markers=['^', 'v', '*'])
 
     #df = pd.concat([df1, df2, df3])
     #df = df.drop(['patient_ids'], axis=1)

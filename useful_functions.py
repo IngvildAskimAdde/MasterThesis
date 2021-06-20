@@ -11,9 +11,10 @@ import pandas as pd
 import h5py
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-matplotlib.rcParams.update({'font.size': 25})
+#matplotlib.rcParams.update({'font.size': 25})
+matplotlib.rcParams.update({'font.size': 40})
 matplotlib.rcParams['font.family'] = "serif"
-matplotlib.rcParams.update({'xtick.labelsize': 20})
+matplotlib.rcParams.update({'xtick.labelsize': 30})
 
 ###### Folders and path functions ###########################
 def create_folder(src_main_folder, dst_main_folder, patient_identifier):
@@ -297,12 +298,12 @@ def plot_pixel_distribution(df):
         array, image_size = get_array_from_image(df['imagePaths'][i])
 
         if df['ID'][i].endswith('PRE'):
-            sns.kdeplot(data=array.flatten(), color='#9ecae1')
+            sns.kdeplot(data=array.flatten(), linestyle='--', color='#9ecae1', lw=2)
         else:
-            sns.kdeplot(data=array.flatten(), color='#fdae6b')
+            sns.kdeplot(data=array.flatten(), color='#fdae6b', lw=2)
 
-    legend_labels = [Line2D([0], [0], color='#9ecae1', label='OxyTarget'),
-                     Line2D([0], [0], color='#fdae6b', label='LARC-RRP')]
+    legend_labels = [Line2D([0], [0], linestyle='--', color='#9ecae1', label='OxyTarget', lw=2),
+                     Line2D([0], [0], color='#fdae6b', label='LARC-RRP', lw=2)]
 
     plt.xlabel('Pixel intensity')
     plt.legend(handles=legend_labels)
@@ -345,6 +346,7 @@ def plot_slice_nifti(path1, slice, mask1=None):
     plt.figure(figsize=(11,8))
     plt.imshow(image_array[slice], cmap='gray')
     plt.colorbar()
+    #bar.set_label('Image pixels')
     if mask1:
         mask = sitk.ReadImage(mask1)
         mask_array = sitk.GetArrayFromImage(mask)
@@ -438,7 +440,7 @@ def plot_learning_rates(dictionary, x_labels, color=None, markers=None):
                        Line2D([0], [0], marker='^', color='k', label='1e-05',
                               markerfacecolor='none', markersize=15, linestyle='none')]
 
-    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.ylabel(r'Median DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
     plt.ylim(-0.0, 1.0)
     plt.xticks(rotation=10)
@@ -471,7 +473,7 @@ def plot_loss_functions(dictionary, x_labels, color=None, markers=None):
                        Line2D([0], [0], marker='D', color='k', label='Modified Dice',
                               markerfacecolor='none', markersize=15, linestyle='none')]
 
-    plt.ylabel(r'DSC$_{\mathrm{P}}$')
+    plt.ylabel(r'Median DSC$_{\mathrm{P}}$')
     plt.xlabel(' ')
     plt.ylim(-0.0, 1.0)
     plt.xticks(rotation=10)
@@ -530,9 +532,9 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
     predicted_file = h5py.File(prediction_path, 'r')
 
     #Access the data
-    input_data = predicted_file['00/x'][indice][:,:,0]
-    mask_1 = predicted_file['00/y'][indice]
-    predicted_mask = predicted_file['00/predicted'][indice]
+    input_data = predicted_file['x'][indice][:,:,0]
+    mask_1 = predicted_file['y'][indice]
+    predicted_mask = predicted_file['predicted'][indice]
 
     if second_mask_path:
         second_mask_file = h5py.File(second_mask_path, 'r')
@@ -545,8 +547,8 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.figure(figsize=(12, 8))
         plt.imshow(input_data, cmap='gray')  # , vmin=-2, vmax=4)
         plt.colorbar()
-        plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
-        plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
+        #plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
+        #plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
         plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
         plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
         plt.contourf(mask_2[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='turquoise')
@@ -566,8 +568,8 @@ def plot_image_slice(prediction_path, indice, second_mask_path=None):
         plt.colorbar()
         plt.contourf(predicted_mask[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='red')
         plt.contour(predicted_mask[..., 0], levels=[0.5], linewidths=2.5, colors='red')
-        plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
-        plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
+        #plt.contourf(mask_1[..., 0], levels=[0.5, 1.0], alpha=0.2, colors='gold')
+        #plt.contour(mask_1[..., 0], levels=[0.5], linewidths=2.5, colors='gold')
         #plt.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.15), ncol=3)
         plt.axis('off')
         plt.tight_layout()
@@ -597,8 +599,8 @@ def plot_train_performance(dataframe):
     """
 
     plt.figure(figsize=(11,9))
-    plt.plot(dataframe['epoch'],dataframe['loss'], label='Loss', color='k')
-    plt.plot(dataframe['epoch'], dataframe['dice'], '--', label='DSC', color='k')
+    plt.plot(dataframe['epoch'],dataframe['loss'], label='Loss', color='k', lw=3)
+    plt.plot(dataframe['epoch'], dataframe['dice'], '--', label='DSC', color='k', lw=3)
     plt.xlabel('Epochs')
     plt.ylabel(' ')
     plt.legend()

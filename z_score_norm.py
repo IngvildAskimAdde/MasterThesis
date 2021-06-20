@@ -92,16 +92,16 @@ def normalize_all(source_folder, destination_folder, image_filename, mask_filena
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MH', '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MHZScore', 'T2.nii', 'Manual_an.nii', DWI=True)
 #normalize_all('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHOnOxy', '/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC_cropped_TS_MHZScoreOnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
 
-df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped_ZScoreNorm', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
-df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_ZScoreNorm', 'T2.nii', 'Manual_an.nii')
-#df_small_LARC = df_LARC[:10]
-#df_small_Oxy = df_Oxy[:5]
-#df_small = df_small_Oxy.append(df_small_LARC)
-#df_small = df_small.reset_index()
+df_LARC = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/LARC/LARC_cropped_MatchedHistZScore_OnOxy', 'image.nii', '1 RTSTRUCT LARC_MRS1-label.nii')
+df_Oxy = p.create_dataframe('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_cropped_MatchedHistZScore', 'T2.nii', 'Manual_an.nii')
+df_small_LARC = df_LARC[:5]
+df_small_Oxy = df_Oxy[:5]
+df_small = df_small_Oxy.append(df_small_LARC)
+df_small = df_small.reset_index()
 
-df = df_Oxy.append(df_LARC)
-df = df.reset_index()
+#df = df_Oxy.append(df_LARC)
+#df = df.reset_index()
 
-uf.plot_pixel_distribution(df)
+uf.plot_pixel_distribution(df_small)
 
-#uf.create_folder('/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated', '/Volumes/LaCie/MasterThesis_Ingvild/Data/dwi/Oxy_all_cropped_TS_updated_MHZScore', 'Oxytarget')
+#uf.create_folder('/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/Oxy_secondDelineationPatients_cropped', '/Volumes/LaCie/MasterThesis_Ingvild/Data/Oxy/TumorSlices/Oxy_TS_Delineation2', 'Oxytarget')
